@@ -1,0 +1,50 @@
+---
+import type { FilterLink } from '../lib/content';
+
+interface Props {
+  types: FilterLink[];
+  regions: FilterLink[];
+  allHref: string;
+  allCurrent: boolean;
+}
+
+const { types, regions, allHref, allCurrent } = Astro.props;
+---
+
+<nav class="filters" aria-label="Filter stories">
+  <div>
+    <p class="filter-label" id="filter-type">Trip type</p>
+    <ul class="filter-list" aria-labelledby="filter-type">
+      <li>
+        <a href={allHref} aria-current={allCurrent ? 'page' : undefined}>All</a>
+      </li>
+      {
+        types.map((link) => (
+          <li>
+            <a href={link.href} aria-current={link.current ? 'page' : undefined} data-type={link.type}>
+              {link.label}
+              <span class="count">{link.count}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  {
+    regions.length > 0 && (
+      <div>
+        <p class="filter-label" id="filter-region">Region</p>
+        <ul class="filter-list" aria-labelledby="filter-region">
+          {regions.map((link) => (
+            <li>
+              <a href={link.href} aria-current={link.current ? 'page' : undefined}>
+                {link.label}
+                <span class="count">{link.count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+</nav>

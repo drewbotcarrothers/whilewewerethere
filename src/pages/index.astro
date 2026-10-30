@@ -1,0 +1,146 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import HeroArt from '../components/HeroArt.astro';
+import StoryCard from '../components/StoryCard.astro';
+import { family, site, tripTypes } from '../config';
+import { destinationsFrom, formatDate, getPosts, videosFrom } from '../lib/content';
+import { url } from '../lib/paths';
+
+const posts = await getPosts();
+const latest = posts.slice(0, 3);
+const videos = videosFrom(posts).slice(0, 3);
+const places = destinationsFrom(posts).slice(0, 6);
+const description = site.description;
+---
+
+<Base title={site.name} description={description}>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Toronto family journal</p>
+        <h1>The days we don't want to forget.</h1>
+        <p class="lede">
+          Andrew, Michelle, Harrison, Sullivan, and Maeve share the family trips and the close-to-home days.
+          A story goes up here after we have been there. When we film it, the video lives on YouTube and the two point at each other.
+        </p>
+        <div class="hero-actions">
+          <a class="btn" href={url('/blog/')}>Read the stories</a>
+          <a class="btn btn-secondary" href={site.youtube} rel="noopener noreferrer" target="_blank">
+            Watch on YouTube<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </div>
+        <ul class="family-row" aria-label="Our family">
+          {family.map((person) => <li>{person.name}</li>)}
+        </ul>
+      </div>
+      <HeroArt />
+    </section>
+
+    <section class="section" aria-labelledby="latest-stories">
+      <div class="section-head">
+        <h2 id="latest-stories">Latest stories</h2>
+        <a href={url('/blog/')}>All stories</a>
+      </div>
+      {
+        latest.length > 0 ? (
+          <ul class="card-grid cols-3">
+            {latest.map((post) => (
+              <li>
+                <StoryCard post={post} level="h3" />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty">
+            <p>
+              No stories are published yet. When we get home from a trip or a day out, the write-up will land here.
+              We don't post places we haven't been.
+            </p>
+          </div>
+        )
+      }
+    </section>
+  </div>
+
+  <section class="band" aria-labelledby="latest-videos">
+    <div class="container section">
+      <div class="section-head">
+        <h2 id="latest-videos">Latest videos</h2>
+        <a href={site.youtube} rel="noopener noreferrer" target="_blank">
+          {site.youtubeHandle}<span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </div>
+      <p class="lede">
+        Each film belongs to a day. When a story has a video, it shows up here and plays on the post itself.
+      </p>
+      {
+        videos.length > 0 ? (
+          <ul class="card-grid cols-3">
+            {videos.map((post) => (
+              <li>
+                <article class="video-card">
+                  <a class="stretch" href={url(`/blog/${post.id}/`)}>
+                    <div class="card-media">
+                      <Image src={post.data.heroImage} alt="" width={640} height={400} loading="lazy" />
+                    </div>
+                    <p class="meta">
+                      <span class="chip" data-type={post.data.tripType}>{tripTypes[post.data.tripType].label}</span>
+                      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+                    </p>
+                    <h3>{post.data.title}</h3>
+                    <p class="card-copy">Watch the film on this story.</p>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty">
+            <p>The channel is open. Videos will be linked from here as soon as a published story includes one.</p>
+            <p>
+              <a class="btn btn-gold" href={site.youtube} rel="noopener noreferrer" target="_blank">
+                Visit the YouTube channel<span class="sr-only"> (opens in a new tab)</span>
+              </a>
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section" aria-labelledby="featured-places">
+      <div class="section-head">
+        <h2 id="featured-places">Featured destinations</h2>
+        <a href={url('/destinations/')}>All destinations</a>
+      </div>
+      {
+        places.length > 0 ? (
+          <ul class="card-grid cols-3">
+            {places.map((place) => (
+              <li>
+                <article class="place-card">
+                  <a href={url(`/destinations/${place.slug}/`)}>
+                    <span class="place-mark" aria-hidden="true">{place.name.slice(0, 1)}</span>
+                    <h3>{place.name}</h3>
+                    <p class="meta">{place.region}</p>
+                    <p class="card-copy">
+                      {place.posts.length} {place.posts.length === 1 ? 'story' : 'stories'}
+                    </p>
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty">
+            <p>
+              Destination pages are built from published stories. The first place we write up will show here, and later visits to the same place will collect beside it.
+            </p>
+          </div>
+        )
+      }
+    </section>
+  </div>
+</Base>

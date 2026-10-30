@@ -1,0 +1,26 @@
+---
+import { site } from '../config';
+import { url } from '../lib/paths';
+
+const path = Astro.url.pathname;
+const links = [
+  { href: url('/blog/'), label: 'Stories' },
+  { href: url('/destinations/'), label: 'Destinations' },
+  { href: url('/about/'), label: 'About' },
+];
+
+function current(href: string) {
+  return path === href || path.startsWith(href);
+}
+---
+
+{
+  links.map((link) => (
+    <a href={link.href} aria-current={current(link.href) ? 'page' : undefined}>
+      {link.label}
+    </a>
+  ))
+}
+<a class="nav-youtube" href={site.youtube} rel="noopener noreferrer" target="_blank">
+  YouTube<span class="sr-only"> (opens in a new tab)</span>
+</a>

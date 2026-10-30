@@ -1,0 +1,20 @@
+---
+import { monetization } from '../config';
+
+interface Props {
+  /** Override the site-wide switch for a page that has affiliate links of its own. */
+  active?: boolean;
+}
+
+const { active = monetization.affiliateDisclosure } = Astro.props;
+---
+
+{
+  active && (
+    <aside class="disclosure" role="note">
+      <p>
+        <strong>Affiliate disclosure.</strong> Some links on this page are affiliate links. If you buy through them, we may earn a commission at no extra cost to you. We only share things we have actually used as a family.
+      </p>
+    </aside>
+  )
+}

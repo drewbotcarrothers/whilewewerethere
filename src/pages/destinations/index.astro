@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import { destinationsFrom, getPosts } from '../../lib/content';
+import { url } from '../../lib/paths';
+
+const posts = await getPosts();
+const places = destinationsFrom(posts);
+const description = 'Places from our published stories. Each destination collects the trips and local days we spent there.';
+---
+
+<Base title="Destinations" description={description}>
+  <div class="container">
+    <header class="page-hero">
+      <p class="eyebrow">Places</p>
+      <h1>Destinations</h1>
+      <p class="lede">
+        A destination page appears when a story names that place. Go back later and the next visit sits with the first one. We only list places we have written about.
+      </p>
+    </header>
+    {
+      places.length > 0 ? (
+        <ul class="card-grid cols-3">
+          {places.map((place) => (
+            <li>
+              <article class="place-card">
+                <a href={url(`/destinations/${place.slug}/`)}>
+                  <span class="place-mark" aria-hidden="true">{place.name.slice(0, 1)}</span>
+                  <h2>{place.name}</h2>
+                  <p class="meta">{place.region}</p>
+                  <p class="card-copy">
+                    {place.posts.length} {place.posts.length === 1 ? 'story' : 'stories'}
+                  </p>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty">
+          <p>No destinations yet. They will show up, one place at a time, as the stories are published.</p>
+          <p><a href={url('/blog/')}>Visit the stories</a></p>
+        </div>
+      )
+    }
+  </div>
+</Base>

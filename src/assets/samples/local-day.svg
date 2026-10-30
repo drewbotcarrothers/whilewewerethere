@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <rect width="1600" height="1000" fill="#d7ebf2"/>
+  <circle cx="1240" cy="210" r="90" fill="#f2c14e"/>
+  <path d="M0 640 C260 560 420 700 700 620 C980 540 1100 500 1600 600 L1600 1000 L0 1000 Z" fill="#8fb39a"/>
+  <path d="M0 760 C300 680 520 820 860 740 C1160 670 1300 700 1600 760 L1600 1000 L0 1000 Z" fill="#1b4332"/>
+  <path d="M180 1000 L280 560 L380 1000 Z" fill="#14382b"/>
+  <path d="M300 1000 L430 480 L560 1000 Z" fill="#0f241b"/>
+  <path d="M1080 1000 L1180 540 L1280 1000 Z" fill="#14382b"/>
+  <rect x="760" y="430" width="18" height="150" fill="#10281e"/>
+  <ellipse cx="769" cy="490" rx="36" ry="16" fill="#10281e"/>
+  <rect x="765" y="390" width="8" height="50" fill="#10281e"/>
+  <path d="M720 1000 C760 780 800 700 800 620 C800 720 860 860 900 1000" fill="none" stroke="#f4efe6" stroke-width="28" stroke-linecap="round"/>
+  <text x="80" y="120" font-family="Liberation Sans, Inter, sans-serif" font-size="36" fill="#1b4332">Sample illustration</text>
+</svg>

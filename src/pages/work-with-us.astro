@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import { mailto, site } from '../config';
+import { url } from '../lib/paths';
+
+const description = 'Partner with While We Were There on family travel stories and YouTube videos. Sponsorship enquiries go by email.';
+const pitch = mailto(
+  'Partnership enquiry — While We Were There',
+  'Tell us about the brand, what you have in mind, and the timing.\n\n',
+);
+---
+
+<Base title="Work with us" description={description}>
+  <div class="container">
+    <header class="page-hero">
+      <p class="eyebrow">Sponsorships</p>
+      <h1>Work with us</h1>
+      <p class="lede">
+        We are a Toronto family — Andrew, Michelle, Harrison, Sullivan, and Maeve — publishing the trips we take and the days we spend close to home, on this site and on <a href={site.youtube}>YouTube</a>.
+      </p>
+    </header>
+    <div class="prose">
+      <p>
+        Brands that fit that life are welcome to write. A partnership can be a story on the site, a mention in a video, or a film of its own. Sponsored work will be labeled, on the page and on YouTube. We still only publish days we were actually there, and we only recommend things we have used.
+      </p>
+    </div>
+
+    <section class="todo" aria-label="Placeholder for audience statistics">
+      <p class="todo-flag">TODO</p>
+      <h2>Audience numbers</h2>
+      <p>Replace this block with real figures before sending the page to a brand. Do not invent them.</p>
+      <ul>
+        <li>TODO: monthly readers on the website</li>
+        <li>TODO: YouTube subscribers</li>
+        <li>TODO: typical views on a film</li>
+        <li>TODO: newsletter size, if we start one</li>
+      </ul>
+    </section>
+
+    <section class="todo" aria-label="Placeholder for audience description">
+      <p class="todo-flag">TODO</p>
+      <h2>Who the audience is</h2>
+      <p>Replace this block with what we actually know about readers and viewers. Leave it out of a pitch until then.</p>
+      <ul>
+        <li>TODO: where readers and viewers live</li>
+        <li>TODO: rough age mix of the audience, which is not the same thing as our kids' ages</li>
+        <li>TODO: the topics they stay for — trips, day trips, local Toronto days, or a mix</li>
+      </ul>
+    </section>
+
+    <section class="todo" aria-label="Placeholder for past partnerships">
+      <p class="todo-flag">TODO</p>
+      <h2>Partnerships so far</h2>
+      <p>TODO: list brands we have actually worked with, or delete this section until there is one. There are none to name today.</p>
+    </section>
+
+    <div class="split">
+      <div class="panel">
+        <h2>Ways we can work together</h2>
+        <ul>
+          <li>A labeled story on the site about a place, product, or experience we used</li>
+          <li>A YouTube film, with the sponsor named in the video and in the description</li>
+          <li>A shorter mention inside a story we were already going to tell</li>
+          <li>A digital guide in the <a href={url('/shop/')}>shop</a>, if the subject is one we can write honestly</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>What we will not do</h2>
+        <ul>
+          <li>Pretend we took a trip we did not take</li>
+          <li>Recommend something we have not used as a family</li>
+          <li>Hide that a story or a video was sponsored</li>
+          <li>Hand over our children's full names or private details</li>
+        </ul>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>Say hello</h2>
+      <p class="lede">Tell us what you make, what you have in mind, and when you need it. We read every note.</p>
+      <p>
+        <a class="btn" href={pitch}>Email {site.email}</a>
+      </p>
+      <p class="fine">The button opens your email app. There is no form stored on the site. You can also start from the <a href={url('/contact/')}>contact page</a>.</p>
+    </section>
+  </div>
+</Base>

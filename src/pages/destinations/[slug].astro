@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import { destinationsFrom, findDestination, getPosts } from '../../lib/content';
+import { breadcrumb, graph } from '../../lib/seo';
+import { url } from '../../lib/paths';
+import { site } from '../../config';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return destinationsFrom(posts).map((place) => ({ params: { slug: place.slug } }));
+}
+
+const slug = Astro.params.slug ?? '';
+const posts = await getPosts();
+const place = findDestination(posts, slug);
+if (!place) throw new Error(`Missing destination: ${slug}`);
+const description = `Stories from ${place.name} in ${place.region}, written after we were there.`;
+const crumbs = breadcrumb([
+  { name: 'Home', path: '/' },
+  { name: 'Destinations', path: '/destinations/' },
+  { name: place.name, path: `/destinations/${place.slug}/` },
+]);
+---
+
+<Base title={place.name} description={description} jsonLd={graph(crumbs)}>
+  <div class="container">
+    <header class="page-hero">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href={url('/')}>Home</a></li>
+          <li><a href={url('/destinations/')}>Destinations</a></li>
+          <li aria-current="page">{place.name}</li>
+        </ol>
+      </nav>
+      <p class="eyebrow">{place.region}</p>
+      <h1>{place.name}</h1>
+      <p class="lede">
+        Every published story from {place.name}.
+        <a href={url(`/blog/region/${place.regionSlug}/`)}>More from {place.region}</a>.
+      </p>
+    </header>
+    <ul class="card-grid">
+      {place.posts.map((post) => (
+        <li>
+          <StoryCard post={post} />
+        </li>
+      ))}
+    </ul>
+    <p class="fine">Films from these days, when we made them, are on <a href={site.youtube}>YouTube</a> and inside each story.</p>
+  </div>
+</Base>

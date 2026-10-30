@@ -1,0 +1,43 @@
+---
+import Base from '../../../../../layouts/Base.astro';
+import StoryListing from '../../../../../components/StoryListing.astro';
+import { tripTypes } from '../../../../../config';
+import { assertTripType, getPosts, slugify, storyFilters } from '../../../../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const seen = new Set<string>();
+  const paths: { params: { type: string; region: string } }[] = [];
+  for (const post of posts) {
+    const key = `${post.data.tripType}/${slugify(post.data.region)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    paths.push({ params: { type: post.data.tripType, region: slugify(post.data.region) } });
+  }
+  return paths;
+}
+
+const type = assertTripType(Astro.params.type);
+const regionSlug = Astro.params.region ?? '';
+const all = await getPosts();
+const posts = all.filter((post) => post.data.tripType === type && slugify(post.data.region) === regionSlug);
+const regionName = posts[0]?.data.region ?? regionSlug;
+const filters = storyFilters(all, { type, region: regionSlug });
+const description = `${tripTypes[type].plural} from ${regionName}.`;
+---
+
+<Base title={`${tripTypes[type].plural} in ${regionName}`} description={description} noindex={posts.length === 0}>
+  <div class="container">
+    <StoryListing
+      eyebrow="Trip type and region"
+      title={`${tripTypes[type].plural} in ${regionName}`}
+      lede={`${tripTypes[type].summary} Filtered to ${regionName}.`}
+      posts={posts}
+      types={filters.types}
+      regions={filters.regions}
+      allHref={filters.allHref}
+      allCurrent={filters.allCurrent}
+      empty="No published stories match this trip type and region."
+    />
+  </div>
+</Base>

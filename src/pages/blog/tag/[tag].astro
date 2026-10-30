@@ -1,0 +1,33 @@
+---
+import Base from '../../../layouts/Base.astro';
+import StoryListing from '../../../components/StoryListing.astro';
+import { getPosts, storyFilters, tagsFrom } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return tagsFrom(posts).map((tag) => ({ params: { tag: tag.slug } }));
+}
+
+const slug = Astro.params.tag ?? '';
+const all = await getPosts();
+const tag = tagsFrom(all).find((entry) => entry.slug === slug);
+if (!tag) throw new Error(`Missing tag: ${slug}`);
+const filters = storyFilters(all);
+const description = `Stories tagged ${tag.name}.`;
+---
+
+<Base title={`Stories tagged ${tag.name}`} description={description}>
+  <div class="container">
+    <StoryListing
+      eyebrow="Tag"
+      title={tag.name}
+      lede={`Published stories tagged “${tag.name}”.`}
+      posts={tag.posts}
+      types={filters.types}
+      regions={filters.regions}
+      allHref={filters.allHref}
+      allCurrent={false}
+      empty="No published stories use this tag."
+    />
+  </div>
+</Base>

@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+const safeId = encodeURIComponent(id);
+---
+
+<figure class="video">
+  <iframe
+    src={`https://www.youtube-nocookie.com/embed/${safeId}`}
+    title={title}
+    width="560"
+    height="315"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+    loading="lazy"></iframe>
+  <figcaption>
+    <a href={`https://www.youtube.com/watch?v=${safeId}`} rel="noopener noreferrer">Watch this video on YouTube</a>
+  </figcaption>
+</figure>

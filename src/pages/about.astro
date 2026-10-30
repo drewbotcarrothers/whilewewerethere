@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import { agesAsOf, family, site } from '../config';
+import { url } from '../lib/paths';
+
+const description = 'Meet Andrew, Michelle, Harrison, Sullivan, and Maeve, the Toronto family behind While We Were There.';
+---
+
+<Base title="About us" description={description}>
+  <div class="container">
+    <header class="page-hero">
+      <p class="eyebrow">The family</p>
+      <h1>About us</h1>
+      <p class="lede">Five of us, based in Toronto, keeping the days that are worth keeping.</p>
+    </header>
+    <div class="prose">
+      <p>
+        Andrew and Michelle are the parents. Harrison, Sullivan, and Maeve are the kids. We use first names only on this site, and that is on purpose.
+      </p>
+      <ul class="family-list">
+        {
+          family.map((person) => (
+            <li>
+              <span class="avatar" aria-hidden="true">{person.initial}</span>
+              <span>
+                <strong>{person.name}</strong>
+                <span>
+                  {person.role}
+                  {'age' in person ? ` · ${person.age}` : ''}
+                </span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="fine">Ages are as of {agesAsOf}. We will update them when the kids point out that we forgot.</p>
+      <p>
+        While We Were There is the notebook for two kinds of days. Some are proper trips: bags by the door, a route, a bedtime in a different room. Plenty are not. They are a park we had never tried, a museum on a weekday, a beach we can reach and still be home for dinner. Both belong here.
+      </p>
+      <p>
+        When a day goes up, we were there. We would rather leave a page empty than invent a trip. The write-up lives on this site. If we filmed it, the video lives on <a href={site.youtube}>our YouTube channel</a>, and the post embeds that film so you can read the details or watch the day.
+      </p>
+      <p>
+        We may share digital guides from the <a href={url('/shop/')}>shop</a>, and we are open to <a href={url('/work-with-us/')}>brand partnerships</a> that fit a family who travels and also stays close to home. Sponsored stories will be labeled. Affiliate links, when we use them, will say so. None of that changes the rule about only publishing days we actually had.
+      </p>
+      <p>
+        If you want to say hello, suggest a spot, or talk about working together, <a href={url('/contact/')}>send us an email</a>.
+      </p>
+    </div>
+  </div>
+</Base>

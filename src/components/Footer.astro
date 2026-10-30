@@ -1,0 +1,61 @@
+---
+import { site } from '../config';
+import { fileUrl, url } from '../lib/paths';
+
+const explore = [
+  { href: url('/blog/'), label: 'Stories' },
+  { href: url('/destinations/'), label: 'Destinations' },
+  { href: url('/about/'), label: 'About us' },
+  { href: url('/faq/'), label: 'FAQ' },
+];
+
+const work = [
+  { href: url('/shop/'), label: 'Guides' },
+  { href: url('/work-with-us/'), label: 'Work with us' },
+  { href: url('/contact/'), label: 'Contact' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <p class="footer-title">{site.name}</p>
+      <p>
+        Family trips and close-to-home days with Andrew, Michelle, Harrison, Sullivan, and Maeve.
+        The stories live here. The films live on YouTube.
+      </p>
+    </div>
+    <div>
+      <p class="footer-label">Explore</p>
+      <ul>
+        {explore.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+    <div>
+      <p class="footer-label">Work</p>
+      <ul>
+        {work.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+    <div>
+      <p class="footer-label">Follow</p>
+      <ul>
+        <li>
+          <a href={site.youtube} rel="noopener noreferrer" target="_blank">
+            YouTube {site.youtubeHandle}<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+        <li><a href={fileUrl('/rss.xml')}>RSS feed</a></li>
+        <li><a href={url('/privacy/')}>Privacy</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container legal">
+    <p>© {new Date().getFullYear()} {site.name}. First names only, and only the days we were actually there.</p>
+  </div>
+</footer>

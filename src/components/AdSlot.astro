@@ -1,0 +1,19 @@
+---
+import { monetization } from '../config';
+
+interface Props {
+  /** Identifies the reserved placement once an ad snippet is added. */
+  placement?: string;
+}
+
+const { placement = 'content' } = Astro.props;
+---
+
+{
+  monetization.ads && (
+    <aside class="ad-slot" data-ad-slot={placement} aria-label="Advertisement">
+      <p class="ad-slot-label">Advertisement</p>
+      <div class="ad-slot-frame" data-ad-unit={placement} />
+    </aside>
+  )
+}
