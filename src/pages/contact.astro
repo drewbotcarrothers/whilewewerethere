@@ -1,0 +1,47 @@
+---
+import PageHero from '../components/PageHero.astro';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { breadcrumbLd } from '../lib/seo';
+
+const description = `Email ${site.email}. No form, no account, no newsletter. Notes go straight to Andrew and Michelle.`;
+---
+
+<Base
+  title="Contact"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'Contact', href: '/contact/' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="A note is enough"
+    title="Contact"
+    dek="Write to Andrew and Michelle. We read it. We are slow when we are actually away, which is part of the point."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'Contact', href: '/contact/' },
+    ]}
+  />
+  <div class="wrap stack">
+    <p>
+      <a class="contact-email" href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+    <p>
+      <a class="button" href={`mailto:${site.email}?subject=Hello%20from%20the%20website`}>Email Andrew and Michelle</a>
+    </p>
+    <section aria-labelledby="expect-title">
+      <h2 id="expect-title">What to expect</h2>
+      <ul>
+        <li>There is no form on this page. Your email app sends the message. This website does not store it.</li>
+        <li>A suggestion for a day trip is welcome, especially if you have done it with kids around six and nine.</li>
+        <li>We cannot promise we will go, and we only write about a place after we have been there.</li>
+        <li>We are not taking guest posts or sponsored trips. If that ever changes, the story will say so in plain language.</li>
+        <li>Please do not send a surname, a school, a home address, or any child's contact details.</li>
+      </ul>
+    </section>
+  </div>
+</Base>

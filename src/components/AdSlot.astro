@@ -1,0 +1,20 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  placement: 'home' | 'post';
+}
+
+const { placement } = Astro.props;
+---
+
+{
+  site.adsEnabled && (
+    <aside class="ad-slot" data-ad-placement={placement} aria-label="Advertisement">
+      <p class="ad-label">Advertisement</p>
+      <div class="ad-unit">
+        <!-- Paste the ad-network snippet here, then set adsEnabled in src/data/site.ts. -->
+      </div>
+    </aside>
+  )
+}

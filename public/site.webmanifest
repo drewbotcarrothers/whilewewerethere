@@ -1,0 +1,22 @@
+{
+  "name": "While We Were There",
+  "short_name": "While We Were There",
+  "description": "Family travel journal from Toronto.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f3eee4",
+  "theme_color": "#1e4639",
+  "lang": "en-CA",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+---
+import PageHero from '../components/PageHero.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { breadcrumbLd } from '../lib/seo';
+
+const description =
+  'Andrew, Michelle, Harrison, Sullivan, and Maeve. A Toronto family writing down the trips and local days they actually take.';
+---
+
+<Base
+  title="About us"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'About us', href: '/about/' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="The five of us"
+    title="About us"
+    dek="We live in Toronto. This is the notebook for the days we leave the house on purpose."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'About us', href: '/about/' },
+    ]}
+  />
+  <div class="wrap stack">
+    <section aria-labelledby="family-title">
+      <h2 id="family-title">The family</h2>
+      <p>
+        Andrew and Michelle are the adults. Harrison is nine, Sullivan is six, and Maeve is six, as of 2026.
+        That is the whole public roster. It is also everyone who gets a vote on when we stop for snacks.
+      </p>
+      <p>
+        We are a Toronto family. The city is home base: school mornings, a streetcar when the car is the wrong
+        idea, and weekends that sometimes stay inside the city and sometimes do not. While We Were There is the
+        record of the second kind of time. The outings. The ones worth keeping.
+      </p>
+    </section>
+    <section aria-labelledby="written-title">
+      <h2 id="written-title">What gets written down</h2>
+      <p>
+        Two sorts of days usually get separated, and they should not. There are the family trips, when we pack
+        a bag and sleep somewhere else. There are the day trips, out after breakfast and home before anyone
+        has to borrow a pillow. And there are the local days that never leave Toronto at all: a ravine, a
+        museum, a neighbourhood we already live beside and still manage not to see.
+      </p>
+      <p>
+        If we went, and we want to remember how it actually was with these particular children at these
+        particular ages, it belongs here. A post says where we were, what kind of outing it was, and how old
+        Harrison, Sullivan, and Maeve were then. Ages matter. A trail that is a stroll at nine was a carry at
+        four, and we do not want to tidy that up later.
+      </p>
+      <p>
+        We would rather publish nothing than invent a place. An empty journal means we have not posted yet. It
+        does not mean the week was empty, and it does not mean we are saving a made-up itinerary.
+      </p>
+    </section>
+    <section aria-labelledby="names-title">
+      <h2 id="names-title">Names, schools, and the rest</h2>
+      <p>
+        First names only. You will not find a surname here, or a school, or a team, or a home address, or a
+        routine that would make it easy to find three children who did not ask to be looked up. When we publish
+        photographs, they are chosen with that rule already in mind.
+      </p>
+      <p>
+        If you write to us, please leave those details out. A kind note about a park does not need them.
+      </p>
+    </section>
+    <section aria-labelledby="films-about-title">
+      <h2 id="films-about-title">The videos</h2>
+      <p>
+        The longer films live on YouTube, on the channel <ExternalLink href={site.youtube}>While We Were There</ExternalLink>.
+        The writing lives on this site. A story can include one of the films, and the player waits until you
+        press play. Some days the video is the whole memory and the page is just the door. The channel is linked
+        at the top and bottom of every page for that reason.
+      </p>
+      <p>
+        <a class="button" href={`mailto:${site.email}`}>Email Andrew and Michelle</a>
+      </p>
+    </section>
+  </div>
+</Base>

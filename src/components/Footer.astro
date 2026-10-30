@@ -1,0 +1,48 @@
+---
+import { nav, site } from '../data/site';
+import ExternalLink from './ExternalLink.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-note">
+      <p class="footer-brand">While we were there</p>
+      <p>
+        Andrew, Michelle, Harrison, Sullivan, and Maeve. A family journal from Toronto. First names
+        only.
+      </p>
+      <p>
+        <ExternalLink href={site.youtube}>YouTube channel</ExternalLink>
+      </p>
+    </div>
+    <nav aria-label="Footer">
+      <h2>Visit</h2>
+      <ul>
+        <li><a href="/">Home</a></li>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div>
+      <h2>Follow</h2>
+      <ul>
+        <li>
+          <ExternalLink href={site.youtube}>YouTube</ExternalLink>
+        </li>
+        <li><a href="/rss.xml">RSS feed</a></li>
+        <li><a href="/privacy/">Privacy policy</a></li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="fineprint">© {year} While We Were There. Toronto, Canada.</p>
+  </div>
+</footer>

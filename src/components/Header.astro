@@ -1,0 +1,49 @@
+---
+import { nav, site } from '../data/site';
+import ExternalLink from './ExternalLink.astro';
+import Mark from './Mark.astro';
+
+const path = Astro.url.pathname;
+
+function current(href: string): boolean {
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <div class="wrap header-bar">
+    <a class="brand" href="/" aria-label="While We Were There, home">
+      <Mark />
+      <span class="brand-text">
+        <span class="brand-small">While we were</span>
+        <span class="brand-large">there</span>
+      </span>
+    </a>
+    <ExternalLink class="button button-quiet youtube-link" href={site.youtube}>
+      <svg class="play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+        <path d="M5 3.2v9.6L13.2 8 5 3.2z" fill="currentColor"></path>
+      </svg>
+      YouTube
+    </ExternalLink>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" />
+    <label class="nav-toggle-label" for="nav-toggle">
+      <span class="sr-only when-closed">Open menu</span>
+      <span class="sr-only when-open">Close menu</span>
+      <span class="burger" aria-hidden="true"></span>
+    </label>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={current(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

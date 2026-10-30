@@ -1,0 +1,24 @@
+---
+import Crumbs from './Crumbs.astro';
+
+interface Crumb {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  dek: string;
+  crumbs?: readonly Crumb[];
+}
+
+const { eyebrow, title, dek, crumbs } = Astro.props;
+---
+
+<header class="page-hero wrap">
+  {crumbs && <Crumbs items={crumbs} />}
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h1>{title}</h1>
+  <p class="dek">{dek}</p>
+</header>

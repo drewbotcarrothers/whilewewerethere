@@ -1,0 +1,113 @@
+---
+import PageHero from '../components/PageHero.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { breadcrumbLd } from '../lib/seo';
+
+const description =
+  'What While We Were There collects (almost nothing), how YouTube embeds work, and how to reach us about privacy.';
+---
+
+<Base
+  title="Privacy policy"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'Privacy policy', href: '/privacy/' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow={`Last updated ${site.policyUpdated}`}
+    title="Privacy policy"
+    dek="This is a family website. The notes below describe what we actually do with this site, not a pile of clauses we copied from somewhere else."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'Privacy policy', href: '/privacy/' },
+    ]}
+  />
+  <div class="wrap stack">
+    <section aria-labelledby="who-title">
+      <h2 id="who-title">Who we are</h2>
+      <p>
+        While We Were There is a journal kept by Andrew and Michelle, with Harrison, Sullivan, and Maeve, in
+        Toronto, Canada. The public site uses first names only. For a privacy question, email
+        <a href={`mailto:${site.email}`}>{site.email}</a>.
+      </p>
+    </section>
+    <section aria-labelledby="collect-title">
+      <h2 id="collect-title">What this website collects</h2>
+      <p>
+        The site is a set of static pages. There are no accounts, no comments, no newsletter, and no analytics
+        script. We do not ask you to sign in, and we do not set cookies of our own.
+      </p>
+      <p>
+        When your browser loads a page, the company that hosts the site can record ordinary server data: an IP
+        address, the date, the page address, and the browser name. That is part of running a web server. We do
+        not add our own tracking on top, and we do not sell that information or use it to build a profile of
+        you. The host is Hostinger. Their privacy policy is at
+        <ExternalLink href="https://www.hostinger.com/legal/privacy-policy">hostinger.com/legal/privacy-policy</ExternalLink>.
+      </p>
+    </section>
+    <section aria-labelledby="email-title">
+      <h2 id="email-title">Email</h2>
+      <p>
+        If you email {site.email}, the message goes through your email app to our inbox. It is not stored by
+        this website, because the website never receives it. Please do not send sensitive information, and
+        please do not send a child's contact details, a surname, a school, or a home address.
+      </p>
+    </section>
+    <section aria-labelledby="youtube-title">
+      <h2 id="youtube-title">YouTube</h2>
+      <p>
+        Links to our channel, <ExternalLink href={site.youtube}>youtube.com/@Whilewewerethere</ExternalLink>,
+        leave this site. YouTube then handles the visit under its own policy:
+        <ExternalLink href="https://policies.google.com/privacy">policies.google.com/privacy</ExternalLink>.
+      </p>
+      <p>
+        If a story includes a film, the player is not loaded with the page. It loads only after you press play,
+        and it uses YouTube's privacy-enhanced domain (youtube-nocookie.com). After that, YouTube receives the
+        request, including your IP address, under its own rules. You can always use the plain link and watch on
+        YouTube instead.
+      </p>
+    </section>
+    <section aria-labelledby="cookies-title">
+      <h2 id="cookies-title">Cookies</h2>
+      <p>
+        We do not set cookies, and we do not use a cookie banner to announce cookies we are not setting. If you
+        press play on an embedded film, YouTube may set cookies. If we later add advertising, this section will
+        be rewritten before those ads go live, because an ad network would be a real change.
+      </p>
+    </section>
+    <section aria-labelledby="children-title">
+      <h2 id="children-title">Children</h2>
+      <p>
+        This journal is written by adults about our family. It is not a service for children to join. We do not
+        knowingly collect personal information from children. The children are named by first name because the
+        journal is theirs too. We do not publish a surname, a school, or a way to contact them.
+      </p>
+    </section>
+    <section aria-labelledby="ads-title">
+      <h2 id="ads-title">Ads and affiliate links</h2>
+      <p>
+        As of {site.policyUpdated}, we do not show ads and we do not use affiliate links. The design has a
+        reserved place for both, and both are switched off, so published pages do not carry empty ad boxes or a
+        disclosure about links that are not there.
+      </p>
+      <p>
+        If that changes, this page will change in the same breath. Any story with an affiliate link will say so
+        where you can see it. You would not pay more because of a commission. A commission would not be the
+        reason we recommend something. A sponsored trip would be labeled as sponsored.
+      </p>
+    </section>
+    <section aria-labelledby="changes-title">
+      <h2 id="changes-title">Changes</h2>
+      <p>
+        If we change what this site does with information, we will update this page and the date at the top.
+        The current version is dated {site.policyUpdated}.
+      </p>
+    </section>
+  </div>
+</Base>

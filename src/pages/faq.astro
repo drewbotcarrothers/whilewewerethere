@@ -1,0 +1,68 @@
+---
+import PageHero from '../components/PageHero.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import Base from '../layouts/Base.astro';
+import { faqs, linkParts } from '../data/faq';
+import { breadcrumbLd } from '../lib/seo';
+
+const description =
+  'Who we are, what we will and will not post, where the videos live, and how to write to us.';
+---
+
+<Base
+  title="FAQ"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'FAQ', href: '/faq/' },
+    ]),
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.answer,
+        },
+      })),
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="Plain answers"
+    title="FAQ"
+    dek="The short version of who we are, what this journal is for, and what we leave out."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'FAQ', href: '/faq/' },
+    ]}
+  />
+  <div class="wrap stack">
+    {
+      faqs.map((item) => (
+        <details class="faq">
+          <summary>
+            <span>{item.question}</span>
+            <span class="faq-icon" aria-hidden="true">
+              <span class="icon-open">+</span>
+              <span class="icon-shut">–</span>
+            </span>
+          </summary>
+          <p class="faq-answer">
+            {linkParts(item.answer).map((part) =>
+              part.type === 'text' ? (
+                part.value
+              ) : part.external ? (
+                <ExternalLink href={part.href}>{part.value}</ExternalLink>
+              ) : (
+                <a href={part.href}>{part.value}</a>
+              ),
+            )}
+          </p>
+        </details>
+      ))
+    }
+  </div>
+</Base>

@@ -1,0 +1,56 @@
+---
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+const safe = /^[A-Za-z0-9_-]{11}$/.test(id);
+const watch = `https://www.youtube.com/watch?v=${id}`;
+---
+
+{
+  safe && (
+    <div class="yt-embed" data-yt={id}>
+      <p>Film from this story.</p>
+      <div class="yt-frame" hidden>
+        <!-- The iframe is created after Play is pressed. -->
+      </div>
+      <div class="yt-actions">
+        <a class="button" href={watch} target="_blank" rel="noopener noreferrer">
+          Open “{title}” on YouTube
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+        <button class="button yt-play" type="button" data-title={title}>Play here</button>
+      </div>
+      <p class="yt-note">YouTube loads only after you press play.</p>
+    </div>
+  )
+}
+
+<script>
+  function bindEmbeds() {
+    document.querySelectorAll<HTMLElement>('.yt-embed').forEach((el) => {
+      if (el.dataset.bound === 'true') return;
+      el.dataset.bound = 'true';
+      const button = el.querySelector<HTMLButtonElement>('.yt-play');
+      const frame = el.querySelector<HTMLElement>('.yt-frame');
+      button?.addEventListener('click', () => {
+        const videoId = el.dataset.yt ?? '';
+        if (!/^[A-Za-z0-9_-]{11}$/.test(videoId) || !frame || !button) return;
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1`;
+        iframe.title = button.dataset.title || 'YouTube video';
+        iframe.allow =
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.hidden = false;
+        frame.replaceChildren(iframe);
+        button.hidden = true;
+      });
+    });
+  }
+
+  bindEmbeds();
+</script>

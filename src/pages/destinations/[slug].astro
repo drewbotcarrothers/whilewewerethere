@@ -1,0 +1,60 @@
+---
+import PageHero from '../../components/PageHero.astro';
+import PostCard from '../../components/PostCard.astro';
+import Base from '../../layouts/Base.astro';
+import { storyCount } from '../../lib/format';
+import { getDestinations } from '../../lib/posts';
+import { absoluteUrl, breadcrumbLd } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const destinations = await getDestinations();
+  return destinations.map((destination) => ({
+    params: { slug: destination.slug },
+    props: { destination },
+  }));
+}
+
+const { destination } = Astro.props;
+const description = `${storyCount(destination.posts.length)} from ${destination.name}, in ${destination.region}. Written after we were there.`;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Destinations', href: '/destinations/' },
+  { name: destination.name, href: `/destinations/${destination.slug}/` },
+];
+---
+
+<Base
+  title={destination.name}
+  description={description}
+  jsonLd={[
+    breadcrumbLd(crumbs),
+    {
+      '@type': 'CollectionPage',
+      '@id': absoluteUrl(`/destinations/${destination.slug}/#collection`),
+      name: destination.name,
+      url: absoluteUrl(`/destinations/${destination.slug}/`),
+      description,
+      isPartOf: { '@id': absoluteUrl('/#website') },
+      about: {
+        '@type': 'Place',
+        name: destination.name,
+        containedInPlace: { '@type': 'Place', name: destination.region },
+      },
+    },
+  ]}
+>
+  <PageHero
+    eyebrow={destination.region}
+    title={destination.name}
+    dek={description}
+    crumbs={crumbs}
+  />
+  <div class="wrap stack">
+    <p>
+      <a href={`/destinations/#${destination.regionSlug}`}>More places in {destination.region}</a>
+    </p>
+    <ul class="cards">
+      {destination.posts.map((post) => <PostCard post={post} />)}
+    </ul>
+  </div>
+</Base>

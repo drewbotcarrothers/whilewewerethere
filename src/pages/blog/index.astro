@@ -1,0 +1,191 @@
+---
+import PageHero from '../../components/PageHero.astro';
+import PostCard from '../../components/PostCard.astro';
+import Base from '../../layouts/Base.astro';
+import { tripTypes } from '../../data/trips';
+import { getIndexPosts, getPublishedPosts } from '../../lib/posts';
+import { slugify } from '../../lib/slug';
+import { absoluteUrl, breadcrumbLd } from '../../lib/seo';
+
+const posts = await getIndexPosts();
+const published = await getPublishedPosts();
+const showDraftNote = import.meta.env.DEV && posts.some((post) => post.data.draft);
+const regions = [...new Map(posts.map((post) => [slugify(post.data.region), post.data.region])).entries()].sort(
+  (a, b) => a[1].localeCompare(b[1], 'en'),
+);
+
+const description =
+  'Stories from our family trips, day trips, and local days. Filter by the kind of outing or the region.';
+---
+
+<Base
+  title="Blog"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'Blog', href: '/blog/' },
+    ]),
+    {
+      '@type': 'Blog',
+      '@id': absoluteUrl('/blog/#blog'),
+      name: 'While We Were There blog',
+      url: absoluteUrl('/blog/'),
+      description,
+      isPartOf: { '@id': absoluteUrl('/#website') },
+      blogPost: published.map((post) => ({
+        '@type': 'BlogPosting',
+        headline: post.data.title,
+        datePublished: post.data.date.toISOString(),
+        url: absoluteUrl(`/blog/${post.id}/`),
+      })),
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="The journal"
+    title="Blog"
+    dek="Family trips, day trips, and local days. Each story says where we went and how old the kids were then."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'Blog', href: '/blog/' },
+    ]}
+  />
+
+  <div class="wrap stack">
+    {
+      showDraftNote && (
+        <p class="preview-banner" role="status">
+          Local preview. Sample drafts are listed on this page and are left out of the production build.
+        </p>
+      )
+    }
+
+    {
+      posts.length > 0 ? (
+        <div data-filters>
+          <div class="filters">
+            <fieldset class="filters-set">
+              <legend>Trip type</legend>
+              <button class="filter-btn" type="button" data-filter-type="all" aria-pressed="true">
+                All
+              </button>
+              {tripTypes.map((trip) => (
+                <button class="filter-btn" type="button" data-filter-type={trip.id} aria-pressed="false">
+                  {trip.plural}
+                </button>
+              ))}
+            </fieldset>
+            <fieldset class="filters-set">
+              <legend>Region</legend>
+              <button class="filter-btn" type="button" data-filter-region="all" aria-pressed="true">
+                All regions
+              </button>
+              {regions.map(([slug, name]) => (
+                <button class="filter-btn" type="button" data-filter-region={slug} aria-pressed="false">
+                  {name}
+                </button>
+              ))}
+            </fieldset>
+          </div>
+          <div class="filter-row">
+            <p class="filter-status" data-filter-status aria-live="polite">
+              Every published story is listed.
+            </p>
+            <a class="filter-clear" href="/blog/">
+              Show every story
+            </a>
+          </div>
+          <noscript>
+            <p class="support">Choosing a filter needs JavaScript. Every story is already listed below.</p>
+          </noscript>
+          <ul class="cards cards-3">
+            {posts.map((post) => (
+              <PostCard post={post} filterable />
+            ))}
+          </ul>
+          <p class="empty" data-filter-empty hidden>
+            No stories in this set yet.
+          </p>
+        </div>
+      ) : (
+        <div class="empty">
+          <p>The journal is open. The first story is not published yet.</p>
+          <p>
+            Family trips, day trips, and local days will share this page. Nothing goes up until we have actually
+            been, and written it down.
+          </p>
+        </div>
+      )
+    }
+  </div>
+</Base>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-filters]');
+  if (root) {
+    const posts = [...root.querySelectorAll<HTMLElement>('[data-post]')];
+    const status = root.querySelector<HTMLElement>('[data-filter-status]');
+    const empty = root.querySelector<HTMLElement>('[data-filter-empty]');
+    const typeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter-type]')];
+    const regionButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter-region]')];
+
+    const labelFor = (buttons: HTMLButtonElement[], value: string, fallback: string) =>
+      buttons.find((button) => (button.dataset.filterType ?? button.dataset.filterRegion) === value)?.textContent?.trim() ||
+      fallback;
+
+    const apply = () => {
+      const params = new URLSearchParams(location.search);
+      const knownTypes = new Set(typeButtons.map((button) => button.dataset.filterType));
+      const knownRegions = new Set(regionButtons.map((button) => button.dataset.filterRegion));
+      let type = params.get('type') || 'all';
+      let region = params.get('region') || 'all';
+      const tag = params.get('tag') || '';
+      if (!knownTypes.has(type)) type = 'all';
+      if (!knownRegions.has(region)) region = 'all';
+
+      let visible = 0;
+      for (const post of posts) {
+        const tags = (post.dataset.tags || '').split(' ').filter(Boolean);
+        const show =
+          (type === 'all' || post.dataset.type === type) &&
+          (region === 'all' || post.dataset.region === region) &&
+          (!tag || tags.includes(tag));
+        post.hidden = !show;
+        if (show) visible += 1;
+      }
+
+      for (const button of typeButtons) {
+        button.setAttribute('aria-pressed', String(button.dataset.filterType === type));
+      }
+      for (const button of regionButtons) {
+        button.setAttribute('aria-pressed', String(button.dataset.filterRegion === region));
+      }
+      if (empty) empty.hidden = visible !== 0;
+      if (status) {
+        const noun = visible === 1 ? 'story' : 'stories';
+        status.textContent = tag
+          ? `${visible} ${noun} tagged “${tag}”.`
+          : `${visible} ${noun}. ${labelFor(typeButtons, type, 'All')}. ${labelFor(regionButtons, region, 'All regions')}.`;
+      }
+    };
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as Element | null)?.closest('button');
+      if (!button || !root.contains(button)) return;
+      const url = new URL(location.href);
+      if (button.dataset.filterType) {
+        if (button.dataset.filterType === 'all') url.searchParams.delete('type');
+        else url.searchParams.set('type', button.dataset.filterType);
+      }
+      if (button.dataset.filterRegion) {
+        if (button.dataset.filterRegion === 'all') url.searchParams.delete('region');
+        else url.searchParams.set('region', button.dataset.filterRegion);
+      }
+      history.replaceState(null, '', url);
+      apply();
+    });
+
+    apply();
+  }
+</script>

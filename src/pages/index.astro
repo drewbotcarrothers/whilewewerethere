@@ -1,0 +1,150 @@
+---
+import AdSlot from '../components/AdSlot.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import FieldSketches from '../components/FieldSketches.astro';
+import PostCard from '../components/PostCard.astro';
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { tripTypes } from '../data/trips';
+import { storyCount } from '../lib/format';
+import { featuredDestinations, getDestinations, getPublishedPosts } from '../lib/posts';
+import { absoluteUrl, breadcrumbLd } from '../lib/seo';
+
+const posts = await getPublishedPosts();
+const latest = posts.slice(0, 3);
+const destinations = await getDestinations();
+const places = featuredDestinations(destinations);
+const counts = new Map(tripTypes.map((trip) => [trip.id, posts.filter((post) => post.data.tripType === trip.id).length]));
+
+const blogLd = {
+  '@type': 'Blog',
+  '@id': absoluteUrl('/#journal'),
+  name: `${site.name} journal`,
+  url: absoluteUrl('/blog/'),
+  description: 'Stories from family trips, day trips, and local days.',
+  isPartOf: { '@id': absoluteUrl('/#website') },
+  blogPost: latest.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    datePublished: post.data.date.toISOString(),
+    url: absoluteUrl(`/blog/${post.id}/`),
+  })),
+};
+---
+
+<Base title={site.name} description={site.description} jsonLd={[blogLd, breadcrumbLd([{ name: 'Home', href: '/' }])]}>
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">Toronto, Canada</p>
+      <h1>While we were there.</h1>
+      <p class="lede">
+        Andrew, Michelle, Harrison, Sullivan, and Maeve. A journal of the family trips, day trips, and
+        local days we actually take, written down after we get home.
+      </p>
+      <p class="support">
+        The films live on YouTube. The notes live here. If a story is published, we were there.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="/blog/">Read the journal</a>
+        <ExternalLink class="button button-quiet" href={site.youtube}>Watch on YouTube</ExternalLink>
+      </div>
+    </div>
+    <div>
+      <FieldSketches />
+    </div>
+  </section>
+
+  <AdSlot placement="home" />
+
+  <section class="section wrap" aria-labelledby="kinds-title">
+    <div class="section-head">
+      <h2 id="kinds-title">The kinds of days</h2>
+    </div>
+    <ol class="trail">
+      {
+        tripTypes.map((trip, index) => {
+          const count = counts.get(trip.id) ?? 0;
+          return (
+            <li>
+              <span class="blaze">{String(index + 1).padStart(2, '0')}</span>
+              <h2>{trip.plural}</h2>
+              <p>{trip.text}</p>
+              {count > 0 && (
+                <a class="more" href={`/blog/?type=${trip.id}`}>
+                  {storyCount(count)}
+                </a>
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+
+  <section class="section wrap" aria-labelledby="journal-title">
+    <div class="section-head">
+      <h2 id="journal-title">From the journal</h2>
+      {latest.length > 0 && <a href="/blog/">All stories</a>}
+    </div>
+    {
+      latest.length > 0 ? (
+        <ul class="cards cards-3">
+          {latest.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </ul>
+      ) : (
+        <div class="empty">
+          <p>No published stories yet.</p>
+          <p>
+            The first one will show up here after we write it. We are not going to invent a trip to fill the
+            space. Until then, the films are on YouTube.
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+  <section class="section wrap" aria-labelledby="places-title">
+    <div class="section-head">
+      <h2 id="places-title">{places.featured ? 'Featured destinations' : 'Destinations'}</h2>
+      {places.items.length > 0 && <a href="/destinations/">All destinations</a>}
+    </div>
+    {
+      places.items.length > 0 ? (
+        <div class="place-grid cols-3">
+          {places.items.map((place) => (
+            <a class="place-card" href={`/destinations/${place.slug}/`}>
+              <span class="place-region">{place.region}</span>
+              <span class="place-name">{place.name}</span>
+              <span class="place-count">{storyCount(place.posts.length)}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty">
+          <p>No destination has a published story yet.</p>
+          <p>
+            Places are collected from the stories, not from a map of trips we have not written. When a post names
+            somewhere, it will be listed here.
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+  <section class="section wrap" aria-labelledby="films-title">
+    <div class="film">
+      <div class="sprocket" aria-hidden="true"></div>
+      <div class="film-inner">
+        <h2 id="films-title">The films</h2>
+        <p>
+          The moving pictures are on YouTube, under the same name. A story here can carry one of them. The
+          channel is where the rest live.
+        </p>
+        <ExternalLink class="button" href={site.youtube}>Watch on YouTube</ExternalLink>
+      </div>
+      <div class="sprocket" aria-hidden="true"></div>
+    </div>
+  </section>
+</Base>

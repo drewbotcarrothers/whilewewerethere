@@ -1,0 +1,86 @@
+---
+import '@fontsource/figtree/latin-400.css';
+import '@fontsource/figtree/latin-600.css';
+import '@fontsource/fraunces/latin-600.css';
+import '@fontsource/fraunces/latin-600-italic.css';
+import '@fontsource/fraunces/latin-700.css';
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { site } from '../data/site';
+import { absoluteUrl, jsonLdScript, organizationLd, websiteLd } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  published?: Date;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = absoluteUrl('/og.png'),
+  imageAlt = 'While We Were There, a family adventure journal from Toronto.',
+  type = 'website',
+  published,
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+const documentTitle =
+  title === site.name ? `${site.name} · ${site.tagline}` : `${title} · ${site.name}`;
+const canonical = absoluteUrl(Astro.url.pathname);
+const structuredData = jsonLdScript([organizationLd(), websiteLd(), ...jsonLd]);
+const defaultImage = image.endsWith('/og.png');
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{documentTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f3eee4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101816" media="(prefers-color-scheme: dark)" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} RSS`} href="/rss.xml" />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:alt" content={imageAlt} />
+    {defaultImage && <meta property="og:image:width" content="1200" />}
+    {defaultImage && <meta property="og:image:height" content="630" />}
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={documentTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    <script type="application/ld+json" set:html={structuredData} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

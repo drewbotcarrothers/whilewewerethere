@@ -1,0 +1,47 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate, isoDate } from '../lib/format';
+import { slugify } from '../lib/slug';
+import { tripById } from '../data/trips';
+
+interface Props {
+  post: Post;
+  filterable?: boolean;
+}
+
+const { post, filterable = false } = Astro.props;
+const trip = tripById(post.data.tripType);
+const svg = post.data.heroImage.endsWith('.svg');
+const tags = post.data.tags.map((tag) => slugify(tag)).join(' ');
+---
+
+<li
+  class="card-item"
+  data-post={filterable ? '' : undefined}
+  data-type={filterable ? post.data.tripType : undefined}
+  data-region={filterable ? slugify(post.data.region) : undefined}
+  data-tags={filterable ? tags : undefined}
+>
+  <a class="card" href={`/blog/${post.id}/`}>
+    <img
+      class:list={['card-media', { svg }]}
+      src={post.data.heroImage}
+      alt=""
+      width="800"
+      height="500"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="card-body">
+      {post.data.draft && <span class="draft-pill">Sample draft</span>}
+      {trip && <span class="stamp">{trip.label}</span>}
+      <h2>{post.data.title}</h2>
+      <p>{post.data.description}</p>
+      <p class="meta">
+        <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
+        <span aria-hidden="true"> · </span>
+        {post.data.destination}
+      </p>
+    </div>
+  </a>
+</li>

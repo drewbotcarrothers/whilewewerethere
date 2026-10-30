@@ -1,0 +1,38 @@
+# While We Were There — Apache rules for Hostinger shared hosting.
+# The deploy branch is the document root (public_html).
+
+# Prefer the Astro page if a previous WordPress copy left index.php behind.
+DirectoryIndex index.html
+
+ErrorDocument 404 /404.html
+
+RewriteEngine On
+
+# www → apex in one hop, before the HTTPS upgrade, so http://www does not
+# stop on https://www. The original query string is preserved.
+RewriteCond %{HTTP_HOST} ^www\.whilewewerethere\.com$ [NC]
+RewriteRule ^(.*)$ https://whilewewerethere.com/$1 [L,R=301]
+
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+
+# The build writes sitemap-index.xml. Offer the shorter name too.
+RewriteRule ^sitemap\.xml$ /sitemap-index.xml [R=301,L]
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    SetEnvIf Request_URI "^/_astro/" astro_hashed
+    Header set Cache-Control "public, max-age=31536000, immutable" env=astro_hashed
+  </IfModule>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/javascript application/json application/xml image/svg+xml
+</IfModule>

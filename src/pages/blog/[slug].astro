@@ -1,0 +1,165 @@
+---
+import { render } from 'astro:content';
+import AdSlot from '../../components/AdSlot.astro';
+import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import ExternalLink from '../../components/ExternalLink.astro';
+import PostCard from '../../components/PostCard.astro';
+import YouTubeEmbed from '../../components/YouTubeEmbed.astro';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+import { tripById } from '../../data/trips';
+import { agesLine, formatDate, isoDate } from '../../lib/format';
+import { getIndexPosts, getPublishedPosts, relatedPosts } from '../../lib/posts';
+import { absoluteUrl, breadcrumbLd, socialImage } from '../../lib/seo';
+import { slugify } from '../../lib/slug';
+
+export async function getStaticPaths() {
+  const posts = await getIndexPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const trip = tripById(post.data.tripType);
+const published = await getPublishedPosts();
+const related = relatedPosts(published, post);
+const canonicalPath = `/blog/${post.id}/`;
+const image = socialImage(post.data.heroImage);
+const imageAlt = post.data.heroAlt ?? post.data.title;
+const svg = post.data.heroImage.endsWith('.svg');
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Blog', href: '/blog/' },
+  { name: post.data.title, href: canonicalPath },
+];
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  image={image}
+  imageAlt={imageAlt}
+  type="article"
+  published={post.data.date}
+  noindex={post.data.draft}
+  jsonLd={[
+    breadcrumbLd(crumbs),
+    {
+      '@type': 'BlogPosting',
+      '@id': `${absoluteUrl(canonicalPath)}#article`,
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: post.data.date.toISOString(),
+      dateModified: post.data.date.toISOString(),
+      inLanguage: 'en-CA',
+      image: [image],
+      keywords: post.data.tags,
+      articleSection: trip?.label ?? post.data.tripType,
+      author: { '@id': absoluteUrl('/#organization') },
+      publisher: { '@id': absoluteUrl('/#organization') },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(canonicalPath) },
+      url: absoluteUrl(canonicalPath),
+      contentLocation: {
+        '@type': 'Place',
+        name: post.data.destination,
+        containedInPlace: {
+          '@type': 'Place',
+          name: post.data.region,
+        },
+      },
+    },
+  ]}
+>
+  <article class="post">
+    <header class="post-intro wrap">
+      <Crumbs items={crumbs} />
+      {
+        post.data.draft && (
+          <p class="draft-banner" role="status">
+            Sample draft. Not a real trip. This page is for local preview and is left out of the production build.
+          </p>
+        )
+      }
+      {trip && <p class="stamp">{trip.label}</p>}
+      <h1>{post.data.title}</h1>
+      <p class="lede">{post.data.description}</p>
+      <dl class="facts">
+        <div>
+          <dt>When</dt>
+          <dd><time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time></dd>
+        </div>
+        <div>
+          <dt>Where</dt>
+          <dd>
+            <a href={`/destinations/${slugify(post.data.destination)}/`}>{post.data.destination}</a>
+            <span aria-hidden="true">, </span>
+            <span class="sr-only">, </span>
+            {post.data.region}
+          </dd>
+        </div>
+        <div>
+          <dt>Ages that day</dt>
+          <dd>{agesLine(post.data.kidsAges)}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <figure class="post-hero wrap-wide">
+      <img
+        class:list={{ svg }}
+        src={post.data.heroImage}
+        alt={imageAlt}
+        width="1600"
+        height="900"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
+
+    <div class="post-body wrap">
+      <AffiliateDisclosure />
+      {post.data.youtubeId && <YouTubeEmbed id={post.data.youtubeId} title={post.data.title} />}
+      <div class="prose">
+        <Content />
+      </div>
+      <AdSlot placement="post" />
+      {
+        post.data.tags.length > 0 && (
+          <ul class="tags">
+            {post.data.tags.map((tag) => (
+              <li>
+                <a href={`/blog/?tag=${slugify(tag)}`}>{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <section class="channel-cta" aria-labelledby="channel-cta-title">
+        <h2 id="channel-cta-title">On YouTube</h2>
+        <p>
+          More from Andrew, Michelle, Harrison, Sullivan, and Maeve is on the {site.name} channel, whether or not
+          this story has a film of its own.
+        </p>
+        <ExternalLink class="button" href={site.youtube}>YouTube channel</ExternalLink>
+      </section>
+      {
+        related.length > 0 && (
+          <section aria-labelledby="related-title">
+            <div class="section-head">
+              <h2 id="related-title">More from the journal</h2>
+            </div>
+            <ul class="cards">
+              {related.map((item) => (
+                <PostCard post={item} />
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </article>
+</Base>

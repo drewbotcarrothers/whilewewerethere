@@ -1,0 +1,44 @@
+---
+title: "Sample: how a day-trip post is structured"
+description: "An MDX format sample, not a real trip. It shows a day-trip story with the same fields as a Markdown post."
+date: 2026-03-02
+heroImage: /images/sample-harbour.svg
+heroAlt: "Sample sketch of a small harbour, used to demonstrate the hero image. Not a photograph from a trip."
+destination: "Example Harbour"
+region: "Example Coast"
+tripType: day-trip
+kidsAges:
+  harrison: 9
+  sullivan: 6
+  maeve: 6
+tags:
+  - sample
+  - mdx
+featured: false
+draft: true
+---
+
+import SampleCallout from '../../components/SampleCallout.astro';
+
+<SampleCallout>
+  This file is MDX, so it can include a component. The other sample is Markdown. Both use the same frontmatter. Neither one is a real outing, and both stay unpublished while draft is true.
+</SampleCallout>
+
+## Same fields, different file
+
+Use `.md` when the story is prose. Use `.mdx` when you want a component in the body. The frontmatter does not change.
+
+A day trip uses `tripType: day-trip`. A local Toronto day uses `tripType: local`. The blog index can filter on either, and on the region.
+
+The destination in this file is deliberately fictional, so a destination page is not created for it. Destination pages are built only from posts that are actually published.
+
+## A short list of the format
+
+- Title, description, and date
+- Hero image and alt text
+- Destination and region, spelled consistently
+- Trip type
+- Ages that day for Harrison, Sullivan, and Maeve
+- Tags
+- Optional YouTube id
+- `draft: true` until the story is real

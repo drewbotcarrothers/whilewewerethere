@@ -1,0 +1,66 @@
+---
+import PageHero from '../../components/PageHero.astro';
+import Base from '../../layouts/Base.astro';
+import { storyCount } from '../../lib/format';
+import { getDestinations, groupByRegion } from '../../lib/posts';
+import { absoluteUrl, breadcrumbLd } from '../../lib/seo';
+
+const destinations = await getDestinations();
+const regions = groupByRegion(destinations);
+const description =
+  'Places named in our published stories. A destination appears here only after we have written about being there.';
+---
+
+<Base
+  title="Destinations"
+  description={description}
+  jsonLd={[
+    breadcrumbLd([
+      { name: 'Home', href: '/' },
+      { name: 'Destinations', href: '/destinations/' },
+    ]),
+    {
+      '@type': 'CollectionPage',
+      '@id': absoluteUrl('/destinations/#collection'),
+      name: 'Destinations',
+      url: absoluteUrl('/destinations/'),
+      description,
+      isPartOf: { '@id': absoluteUrl('/#website') },
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="Where the stories are set"
+    title="Destinations"
+    dek="Each place is gathered from a published story. If we have not written it yet, it is not on this list."
+    crumbs={[
+      { name: 'Home', href: '/' },
+      { name: 'Destinations', href: '/destinations/' },
+    ]}
+  />
+  <div class="wrap stack">
+    {
+      regions.length > 0 ? (
+        regions.map((region) => (
+          <section class="region-block" id={region.slug} aria-labelledby={`region-${region.slug}`}>
+            <h2 id={`region-${region.slug}`}>{region.name}</h2>
+            <div class="place-grid">
+              {region.destinations.map((place) => (
+                <a class="place-card" href={`/destinations/${place.slug}/`}>
+                  <span class="place-region">{place.region}</span>
+                  <span class="place-name">{place.name}</span>
+                  <span class="place-count">{storyCount(place.posts.length)}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      ) : (
+        <div class="empty">
+          <p>No destination has a published story yet.</p>
+          <p>When a post names a place, the place gets a page of its own, grouped here by region.</p>
+        </div>
+      )
+    }
+  </div>
+</Base>

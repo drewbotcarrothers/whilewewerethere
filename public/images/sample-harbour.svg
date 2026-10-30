@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <title>Sample sketch of a small harbour</title>
+  <rect width="800" height="450" fill="#f4efe6"/>
+  <circle cx="140" cy="90" r="32" fill="#e0b15a"/>
+  <path d="M0 250h800v200H0z" fill="#184e62"/>
+  <path d="M80 250v150M160 250v150M240 250v150" stroke="#8e3118" stroke-width="10" stroke-linecap="round"/>
+  <path d="M60 268h200" stroke="#f6f1e8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M470 300c40 16 90 16 140 0 10 28-16 48-70 52h-70c-36-6-54-24-50-52z" fill="#1e4639"/>
+  <path d="M520 300c24 18 70 18 100 2" fill="none" stroke="#f6f1e8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M430 250c20-70 50-70 70 0" fill="#14342b"/>
+  <rect x="458" y="250" width="12" height="30" fill="#8e3118"/>
+  <text x="48" y="410" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#f6f1e8">Sample sketch</text>
+</svg>

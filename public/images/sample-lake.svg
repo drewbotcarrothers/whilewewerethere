@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <title>Sample sketch of a canoe on a lake</title>
+  <rect width="800" height="450" fill="#e6f1f4"/>
+  <circle cx="660" cy="84" r="34" fill="#e0b15a"/>
+  <path d="M70 250c36-90 70-90 96 0" fill="#1e4639"/>
+  <path d="M150 262c32-110 64-110 86 0" fill="#14342b"/>
+  <rect x="108" y="250" width="12" height="28" fill="#8e3118"/>
+  <rect x="186" y="262" width="12" height="34" fill="#8e3118"/>
+  <path d="M0 310c90-28 150-8 230 8s160 28 250-4 180-16 320 18v118H0z" fill="#184e62"/>
+  <path d="M430 292c48 22 110 22 168 0" fill="none" stroke="#f6f1e8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M468 292c36 30 100 30 146 6" fill="none" stroke="#8e3118" stroke-width="8" stroke-linecap="round"/>
+  <path d="M520 292l64-46" stroke="#1a211d" stroke-width="4" stroke-linecap="round"/>
+  <text x="48" y="48" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#1e4639">Sample sketch</text>
+</svg>

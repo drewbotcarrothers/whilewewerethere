@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const description = 'That page is not on whilewewerethere.com. Try the journal, the destinations, or the home page.';
+---
+
+<Base title="Page not found" description={description} noindex>
+  <header class="page-hero wrap">
+    <p class="eyebrow">404</p>
+    <h1>This page is not on the map.</h1>
+    <p class="dek">
+      The link may be old, or the story was never published. {site.name} only has the pages we have actually
+      written.
+    </p>
+    <div class="hero-actions">
+      <a class="button" href="/">Home</a>
+      <a class="button button-quiet" href="/blog/">Blog</a>
+      <a class="button button-quiet" href="/destinations/">Destinations</a>
+      <a class="button button-quiet" href="/about/">About us</a>
+    </div>
+  </header>
+</Base>
