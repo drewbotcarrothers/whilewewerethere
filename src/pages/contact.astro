@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+import { mailto, site } from '../config';
+import { url } from '../lib/paths';
+
+const description = 'Email While We Were There. Messages open in your email app. Nothing is stored by a form on this site.';
+const hello = mailto('Hello from the website');
+---
+
+<Base title="Contact" description={description}>
+  <div class="container contact-grid">
+    <header class="page-hero">
+      <p class="eyebrow">Say hello</p>
+      <h1>Contact</h1>
+      <p class="lede">
+        Write to <a href={hello}>{site.email}</a>. That opens your own email app. This page has no form backend and does not store what you type.
+      </p>
+      <p>
+        For a brand partnership, you can also start from <a href={url('/work-with-us/')}>Work with us</a>.
+      </p>
+    </header>
+    <form id="contact-form" action={hello} method="post" enctype="text/plain" data-email={site.email}>
+      <label>
+        Name
+        <input name="Name" type="text" autocomplete="name" required />
+      </label>
+      <label>
+        Email
+        <input name="Email" type="email" autocomplete="email" required />
+      </label>
+      <label>
+        Topic
+        <select name="Topic">
+          <option>Hello</option>
+          <option>A story idea</option>
+          <option>Brand partnership</option>
+          <option>A guide or download</option>
+        </select>
+      </label>
+      <label>
+        Message
+        <textarea name="Message" required></textarea>
+      </label>
+      <button class="btn" type="submit">Open email</button>
+      <p class="fine">If the button does not open an email, use {site.email} directly. We read what you send us, and we reply from that same address.</p>
+    </form>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector('#contact-form');
+  form?.addEventListener('submit', (event) => {
+    if (!(form instanceof HTMLFormElement)) return;
+    event.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('Name') ?? '').trim();
+    const replyTo = String(data.get('Email') ?? '').trim();
+    const topic = String(data.get('Topic') ?? 'Hello').trim();
+    const message = String(data.get('Message') ?? '').trim();
+    const to = form.dataset.email ?? '';
+    if (!to) return;
+    const subject = `While We Were There — ${topic}`;
+    const body = `${message}\n\n— ${name}\n${replyTo}`;
+    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

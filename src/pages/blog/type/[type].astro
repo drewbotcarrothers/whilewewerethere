@@ -1,0 +1,33 @@
+---
+import Base from '../../../layouts/Base.astro';
+import StoryListing from '../../../components/StoryListing.astro';
+import { tripTypes } from '../../../config';
+import { assertTripType, getPosts, storyFilters } from '../../../lib/content';
+
+export function getStaticPaths() {
+  return Object.keys(tripTypes).map((type) => ({ params: { type } }));
+}
+
+const type = assertTripType(Astro.params.type);
+const all = await getPosts();
+const posts = all.filter((post) => post.data.tripType === type);
+const filters = storyFilters(all, { type });
+const info = tripTypes[type];
+const description = `${info.plural} from our family journal. ${info.summary}`;
+---
+
+<Base title={info.plural} description={description} noindex={posts.length === 0}>
+  <div class="container">
+    <StoryListing
+      eyebrow="Trip type"
+      title={info.plural}
+      lede={info.summary}
+      posts={posts}
+      types={filters.types}
+      regions={filters.regions}
+      allHref={filters.allHref}
+      allCurrent={filters.allCurrent}
+      empty={`No ${info.plural.toLowerCase()} are published yet.`}
+    />
+  </div>
+</Base>

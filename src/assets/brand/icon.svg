@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#f3eee4"/>
+  <circle cx="256" cy="256" r="220" fill="#1b4332"/>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="#f3d48a" stroke-width="14"/>
+  <text x="256" y="310" text-anchor="middle" font-family="Liberation Serif, Georgia, serif" font-size="220" fill="#fffaf3">W</text>
+</svg>

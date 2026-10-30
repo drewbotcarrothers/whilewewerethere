@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import StoryListing from '../../components/StoryListing.astro';
+import { getPosts, storyFilters } from '../../lib/content';
+
+const posts = await getPosts();
+const filters = storyFilters(posts);
+const description = 'Stories from our family trips, day trips, and local adventures around Toronto. A post goes up after we have actually been there.';
+---
+
+<Base title="Stories" description={description} noindex={posts.length === 0}>
+  <div class="container">
+    <StoryListing
+      eyebrow="The journal"
+      title="Stories"
+      lede="Family trips, day trips, and local days. Filter by the kind of outing or by region. Nothing is listed here until we have been."
+      posts={posts}
+      types={filters.types}
+      regions={filters.regions}
+      allHref={filters.allHref}
+      allCurrent={filters.allCurrent}
+      empty="The first story is still to come. Trip types are ready for it: a family trip, a day trip, or a local activity."
+    />
+    <AdSlot placement="blog-index" />
+  </div>
+</Base>

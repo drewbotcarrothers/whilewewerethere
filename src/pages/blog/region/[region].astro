@@ -1,0 +1,33 @@
+---
+import Base from '../../../layouts/Base.astro';
+import StoryListing from '../../../components/StoryListing.astro';
+import { findRegion, getPosts, regionsFrom, storyFilters } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return regionsFrom(posts).map((region) => ({ params: { region: region.slug } }));
+}
+
+const slug = Astro.params.region ?? '';
+const all = await getPosts();
+const region = findRegion(all, slug);
+if (!region) throw new Error(`Missing region: ${slug}`);
+const filters = storyFilters(all, { region: region.slug });
+const description = `Family stories from ${region.name}. Trips and local days we have written up from this region.`;
+---
+
+<Base title={region.name} description={description}>
+  <div class="container">
+    <StoryListing
+      eyebrow="Region"
+      title={region.name}
+      lede={`Stories we have published from ${region.name}.`}
+      posts={region.posts}
+      types={filters.types}
+      regions={filters.regions}
+      allHref={filters.allHref}
+      allCurrent={filters.allCurrent}
+      empty={`No published stories from ${region.name} yet.`}
+    />
+  </div>
+</Base>

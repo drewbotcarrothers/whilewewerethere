@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
+import { getProducts } from '../../lib/content';
+import { url } from '../../lib/paths';
+import { site } from '../../config';
+
+const products = await getProducts();
+const description = 'Digital guides from While We Were There. Buy buttons link to an external checkout. We do not take payment on this site.';
+---
+
+<Base title="Guides" description={description}>
+  <div class="container">
+    <header class="page-hero">
+      <p class="eyebrow">Shop</p>
+      <h1>Guides</h1>
+      <p class="lede">
+        Downloadable guides for family trips and days closer to home. Nothing is for sale until a guide is actually finished. When it is, the buy button leaves this website for a checkout link we set on that guide.
+      </p>
+    </header>
+    <div class="split">
+      <div class="prose">
+        <h2>How buying works</h2>
+        <p>
+          We do not run a cart and we never see your card number. Each guide has a <code>buyUrl</code> in its file. That link is the whole checkout: a digital-download shop, a payment page, or a file host we choose later.
+        </p>
+        <p>
+          If a link pays us a commission, the guide is marked as an affiliate and the disclosure on this page is switched on. Right now that disclosure is off, because there is nothing to disclose.
+        </p>
+        <AffiliateDisclosure />
+      </div>
+      {
+        products.length === 0 && (
+          <div class="panel">
+            <h2>Not quite yet</h2>
+            <p>
+              The shelf is built. The first real guide is not. Questions in the meantime can go to <a href={`mailto:${site.email}`}>{site.email}</a>.
+            </p>
+          </div>
+        )
+      }
+    </div>
+    <AdSlot placement="shop" />
+    {
+      products.length > 0 ? (
+        <ul class="card-grid">
+          {products.map((product) => (
+            <li>
+              <article class="product-card">
+                <a href={url(`/shop/${product.id}/`)}>
+                  {product.data.cover ? (
+                    <div class="card-media">
+                      <Image src={product.data.cover} alt="" width={640} height={400} loading="lazy" />
+                    </div>
+                  ) : (
+                    <span class="product-mark" aria-hidden="true">{product.data.title.slice(0, 1)}</span>
+                  )}
+                  {product.data.sample && <p class="meta"><span class="chip">Sample</span></p>}
+                  <h2>{product.data.title}</h2>
+                  <p class="price">{product.data.price}</p>
+                  <p class="card-copy">{product.data.description}</p>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ul>
+      ) : null
+    }
+  </div>
+</Base>

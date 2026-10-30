@@ -1,0 +1,37 @@
+# While We Were There — static Astro output on Hostinger (Apache / LiteSpeed).
+# Prefer index.html over any leftover WordPress index.php in the same folder.
+DirectoryIndex index.html
+
+Options -Indexes -MultiViews
+
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # www → apex in one hop for both http and https. The substitution has no
+  # query string, so the original query string is preserved.
+  RewriteCond %{HTTP_HOST} ^www\.whilewewerethere\.com$ [NC]
+  RewriteRule ^(.*)$ https://whilewewerethere.com/$1 [L,R=301]
+
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+  <FilesMatch "\.(css|js|mjs|svg|png|jpg|jpeg|webp|gif|ico|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|txt)$">
+    Header set Cache-Control "public, max-age=300"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml application/rss+xml application/xml
+</IfModule>

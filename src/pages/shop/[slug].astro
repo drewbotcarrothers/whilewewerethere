@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
+import { monetization, site } from '../../config';
+import { getProducts } from '../../lib/content';
+import { breadcrumb, graph } from '../../lib/seo';
+import { url } from '../../lib/paths';
+
+export async function getStaticPaths() {
+  const products = await getProducts();
+  return products.map((product) => ({ params: { slug: product.id } }));
+}
+
+const slug = Astro.params.slug ?? '';
+const product = (await getProducts()).find((entry) => entry.id === slug);
+if (!product) throw new Error(`Missing guide: ${slug}`);
+const data = product.data;
+const { Content } = await render(product);
+const buyHost = data.buyUrl ? new URL(data.buyUrl).host : '';
+const crumbs = breadcrumb([
+  { name: 'Home', path: '/' },
+  { name: 'Guides', path: '/shop/' },
+  { name: data.title, path: `/shop/${product.id}/` },
+]);
+---
+
+<Base title={data.title} description={data.description} jsonLd={graph(crumbs)}>
+  <article class="container post-layout">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={url('/')}>Home</a></li>
+        <li><a href={url('/shop/')}>Guides</a></li>
+        <li aria-current="page">{data.title}</li>
+      </ol>
+    </nav>
+    <header class="page-hero">
+      <p class="eyebrow">Digital download</p>
+      <h1>{data.title}</h1>
+      <p class="lede">{data.description}</p>
+      <p class="price">{data.price}</p>
+    </header>
+    {
+      data.sample && (
+        <p class="banner" role="note">Sample product. This guide is not for sale and is left out of the published site.</p>
+      )
+    }
+    {
+      data.cover && (
+        <Image class="post-hero-img" src={data.cover} alt={data.coverAlt ?? ''} widths={[480, 800, 1200]} sizes="(min-width: 760px) 760px, 100vw" />
+      )
+    }
+    <AffiliateDisclosure active={data.affiliate || monetization.affiliateDisclosure} />
+    {
+      data.buyUrl ? (
+        <>
+          <p>
+            <a class="btn" href={data.buyUrl} rel={data.affiliate ? 'sponsored noopener noreferrer' : 'noopener noreferrer'}>
+              Buy · {data.price}
+            </a>
+          </p>
+          <p class="fine">
+            You leave {site.name} for {buyHost} to pay and download. We do not take card numbers here.
+          </p>
+        </>
+      ) : (
+        <p class="banner">The buy link is not set yet. Add <code>buyUrl</code> to this guide when the checkout page is ready.</p>
+      )
+    }
+    <div class="prose">
+      <Content />
+    </div>
+    <AdSlot placement="product" />
+  </article>
+</Base>

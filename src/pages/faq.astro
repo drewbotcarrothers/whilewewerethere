@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import { agesAsOf, site } from '../config';
+import { url } from '../lib/paths';
+
+const description = 'Answers about our family stories, YouTube videos, sponsorships, and digital guides.';
+
+const faqs = [
+  {
+    q: 'Who writes While We Were There?',
+    a: `Andrew and Michelle, parents to Harrison (9), Sullivan (6), and Maeve (6), as of ${agesAsOf}. We live in Toronto. We use first names only.`,
+  },
+  {
+    q: 'What kinds of stories will you post?',
+    a: 'Family trips, day trips, and local activities. A weekend away and an afternoon at a park we had not tried yet are both worth a page, as long as we were actually there.',
+  },
+  {
+    q: 'Are there published trips yet?',
+    a: 'Not yet. The site is ready, and a story goes up after the day happens. We would rather show an empty journal than a made-up one.',
+  },
+  {
+    q: 'Where are the videos?',
+    a: `On our YouTube channel, ${site.youtubeHandle}. When a story has a film, the post embeds that video and links back to the channel. The channel is linked in the header and footer of every page.`,
+  },
+  {
+    q: 'Can brands work with you?',
+    a: 'Yes, when the partnership fits a Toronto family who takes trips and also explores close to home. Sponsored stories will be labeled. The Work with us page is where to start, and it still has placeholder sections where real audience numbers need to go.',
+  },
+  {
+    q: 'Do you sell anything?',
+    a: 'Not yet. The shop is set up for digital guides. When a guide is ready, its buy button will send you to a checkout we configure. We do not take card numbers on this website.',
+  },
+  {
+    q: 'How do I contact you?',
+    a: `Email ${site.email}. The contact page opens your email app. There is no message stored on our server.`,
+  },
+  {
+    q: 'Do you collect personal information?',
+    a: 'We do not run accounts or a contact database. If you email us, we use that message to reply. YouTube may set cookies if you play an embedded video. The privacy page has the detail, including what will change if we turn on ads or affiliate links later.',
+  },
+];
+---
+
+<Base title="FAQ" description={description}>
+  <div class="container">
+    <header class="page-hero">
+      <p class="eyebrow">Questions</p>
+      <h1>FAQ</h1>
+      <p class="lede">Short answers. If yours is not here, <a href={url('/contact/')}>send a note</a>.</p>
+    </header>
+    <div class="faq-list">
+      {
+        faqs.map((item) => (
+          <details class="faq">
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</Base>

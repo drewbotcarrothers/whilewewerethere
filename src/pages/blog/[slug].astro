@@ -1,0 +1,146 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
+import YouTubeEmbed from '../../components/YouTubeEmbed.astro';
+import { site, tripTypes } from '../../config';
+import { findDestination, formatDate, getPosts, isoDate, slugify, type BlogPost } from '../../lib/content';
+import { breadcrumb, graph } from '../../lib/seo';
+import { url } from '../../lib/paths';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id } }));
+}
+
+const { slug } = Astro.params;
+const posts = await getPosts();
+const post = posts.find((entry) => entry.id === slug);
+if (!post) throw new Error(`Missing story: ${slug}`);
+
+const data = post.data;
+const { Content } = await render(post);
+const hero = await getImage({ src: data.heroImage, width: 1200, height: 675, format: 'jpeg' });
+const canonicalPath = `/blog/${post.id}/`;
+const place = findDestination(posts, slugify(data.destination));
+const related = (place?.posts ?? []).filter((entry) => entry.id !== post.id).slice(0, 3);
+
+const posting: Record<string, unknown> = {
+  '@type': 'BlogPosting',
+  '@id': new URL(`${canonicalPath}#article`, site.url).href,
+  headline: data.title,
+  description: data.description,
+  datePublished: data.date.toISOString(),
+  dateModified: data.date.toISOString(),
+  author: { '@type': 'Person', name: 'Andrew' },
+  publisher: { '@id': `${site.url}/#organization` },
+  mainEntityOfPage: new URL(canonicalPath, site.url).href,
+  image: new URL(hero.src, site.url).href,
+  articleSection: tripTypes[data.tripType].label,
+  keywords: data.tags.join(', '),
+  inLanguage: 'en-CA',
+  url: new URL(canonicalPath, site.url).href,
+};
+
+const crumbs = breadcrumb([
+  { name: 'Home', path: '/' },
+  { name: 'Stories', path: '/blog/' },
+  { name: data.title, path: canonicalPath },
+]);
+---
+
+<Base
+  title={data.title}
+  description={data.description}
+  image={hero.src}
+  imageAlt={data.heroAlt}
+  imageWidth={hero.attributes.width}
+  imageHeight={hero.attributes.height}
+  ogType="article"
+  published={data.date.toISOString()}
+  tags={data.tags}
+  jsonLd={graph(posting, crumbs)}
+>
+  <article class="container post-layout">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href={url('/')}>Home</a></li>
+        <li><a href={url('/blog/')}>Stories</a></li>
+        <li aria-current="page">{data.title}</li>
+      </ol>
+    </nav>
+    <header>
+      <p class="meta">
+        <a class="chip" data-type={data.tripType} href={url(`/blog/type/${data.tripType}/`)}>{tripTypes[data.tripType].label}</a>
+        {data.sample && <span class="chip">Sample draft</span>}
+        <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time>
+      </p>
+      <h1>{data.title}</h1>
+      <p class="lede">{data.description}</p>
+      <p class="meta">
+        <a href={url(`/destinations/${slugify(data.destination)}/`)}>{data.destination}</a>
+        <span aria-hidden="true">·</span>
+        <a href={url(`/blog/region/${slugify(data.region)}/`)}>{data.region}</a>
+      </p>
+    </header>
+    {
+      data.sample && (
+        <p class="banner" role="note">
+          Sample draft. This is a writing template, not a real trip. It is left out of the published site while draft and sample are set.
+        </p>
+      )
+    }
+    <Image
+      class="post-hero-img"
+      src={data.heroImage}
+      alt={data.heroAlt}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 760px) 760px, 100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <AffiliateDisclosure />
+    {
+      data.youtubeId ? (
+        <YouTubeEmbed id={data.youtubeId} title={`${data.title} on YouTube`} />
+      ) : (
+        <p>
+          <a href={site.youtube} rel="noopener noreferrer">Watch our channel on YouTube</a>
+          {' '}for the films that pair with these stories.
+        </p>
+      )
+    }
+    <AdSlot placement="story-top" />
+    <div class="prose">
+      <Content />
+    </div>
+    <p>
+      More from the family on <a href={site.youtube} rel="noopener noreferrer">YouTube {site.youtubeHandle}</a>.
+    </p>
+    {
+      data.tags.length > 0 && (
+        <ul class="tag-list" aria-label="Tags">
+          {data.tags.map((tag) => (
+            <li>
+              <a href={url(`/blog/tag/${slugify(tag)}/`)}>{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      related.length > 0 && (
+        <section aria-labelledby="more-here">
+          <h2 id="more-here">More from {data.destination}</h2>
+          <ul>
+            {related.map((entry: BlogPost) => (
+              <li><a href={url(`/blog/${entry.id}/`)}>{entry.data.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</Base>

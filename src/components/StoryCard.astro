@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import { tripTypes } from '../config';
+import { formatDate, type BlogPost } from '../lib/content';
+import { url } from '../lib/paths';
+
+interface Props {
+  post: BlogPost;
+  level?: 'h2' | 'h3';
+}
+
+const { post, level = 'h2' } = Astro.props;
+const Heading = level;
+const data = post.data;
+---
+
+<article class="story-card" data-type={data.tripType}>
+  <a href={url(`/blog/${post.id}/`)}>
+    <div class="card-media">
+      <Image src={data.heroImage} alt="" width={640} height={400} loading="lazy" />
+    </div>
+    <p class="meta">
+      <span class="chip" data-type={data.tripType}>{tripTypes[data.tripType].label}</span>
+      {data.sample && <span class="chip">Sample</span>}
+      <time datetime={data.date.toISOString()}>{formatDate(data.date)}</time>
+    </p>
+    <Heading>{data.title}</Heading>
+    <p class="card-copy">{data.description}</p>
+    <p class="meta">{data.destination} · {data.region}</p>
+  </a>
+</article>

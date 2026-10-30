@@ -1,0 +1,41 @@
+---
+import StoryCard from './StoryCard.astro';
+import StoryFilters from './StoryFilters.astro';
+import type { BlogPost, FilterLink } from '../lib/content';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  posts: BlogPost[];
+  types: FilterLink[];
+  regions: FilterLink[];
+  allHref: string;
+  allCurrent: boolean;
+  empty: string;
+}
+
+const { eyebrow, title, lede, posts, types, regions, allHref, allCurrent, empty } = Astro.props;
+---
+
+<header class="page-hero">
+  <p class="eyebrow">{eyebrow}</p>
+  <h1>{title}</h1>
+  <p class="lede">{lede}</p>
+</header>
+<StoryFilters types={types} regions={regions} allHref={allHref} allCurrent={allCurrent} />
+{
+  posts.length > 0 ? (
+    <ul class="card-grid">
+      {posts.map((post) => (
+        <li>
+          <StoryCard post={post} />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <div class="empty">
+      <p>{empty}</p>
+    </div>
+  )
+}

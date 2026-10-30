@@ -1,0 +1,26 @@
+---
+import NavLinks from './NavLinks.astro';
+import { site } from '../config';
+import { url } from '../lib/paths';
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={url('/')}>
+      <span class="brand-mark" aria-hidden="true">W</span>
+      <span>
+        <span class="brand-name">{site.name}</span>
+        <span class="brand-place">{site.city}</span>
+      </span>
+    </a>
+    <nav class="nav nav-desktop" aria-label="Primary">
+      <NavLinks />
+    </nav>
+    <details class="nav-mobile">
+      <summary class="nav-toggle">Menu</summary>
+      <nav class="nav" aria-label="Primary mobile">
+        <NavLinks />
+      </nav>
+    </details>
+  </div>
+</header>
