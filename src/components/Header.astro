@@ -1,13 +1,13 @@
 ---
 import NavLinks from './NavLinks.astro';
 import { site } from '../config';
-import { url } from '../lib/paths';
+import { url, fileUrl } from '../lib/paths';
 ---
 
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href={url('/')}>
-      <span class="brand-mark" aria-hidden="true">W</span>
+      <img class="brand-mark" src={fileUrl('/images/logo.png')} alt="" width="250" height="200" />
       <span>
         <span class="brand-name">{site.name}</span>
         <span class="brand-place">{site.city}</span>

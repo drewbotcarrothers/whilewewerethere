@@ -52,8 +52,8 @@ const structured = jsonLd ?? graph();
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#1b4332" />
     <meta name="author" content="Andrew" />
-    <link rel="icon" href={fileUrl('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={fileUrl('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="icon" href={fileUrl('/icon-512.png')} type="image/png" sizes="512x512" />
     <link rel="apple-touch-icon" href={fileUrl('/apple-touch-icon.png')} />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} stories`} href={new URL('/rss.xml', Astro.site ?? site.url).href} />
     <meta property="og:site_name" content={site.name} />
