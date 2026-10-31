@@ -7,7 +7,7 @@ export const site = {
     'The family journal of Andrew, Michelle, Harrison, Sullivan, and Maeve. Real trips and close-to-home days from Toronto, with the films on YouTube.',
   url: 'https://whilewewerethere.com',
   locale: 'en-CA',
-  email: 'hello@whilewewerethere.com',
+  email: 'contact@whilewewerethere.com',
   youtube: 'https://www.youtube.com/@Whilewewerethere',
   youtubeHandle: '@Whilewewerethere',
   city: 'Toronto',

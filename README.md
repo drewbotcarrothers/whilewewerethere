@@ -102,7 +102,7 @@ Setting `affiliateDisclosure` to `true` shows the disclosure on stories and on t
 ## Other pages to keep current
 
 - **About** and **FAQ** include the kids' ages as of 2026 (`agesAsOf` in `src/config.ts`). Update them.
-- **Contact email** is `hello@whilewewerethere.com` in `src/config.ts`. Create that mailbox, or change the address, before you rely on the contact page.
+- **Contact email** is `contact@whilewewerethere.com` in `src/config.ts`. Create that mailbox, or change the address, before you rely on the contact page.
 - **Work with us** (`/work-with-us/`) has yellow TODO blocks for audience numbers, who the readers are, and past sponsors. Replace those with real figures before sending the page to a brand. Do not invent stats.
 - **Privacy** describes the site as it works today, including ads, affiliates, sponsorships, and external checkouts that are not switched on yet. Update the date if that changes.
 
