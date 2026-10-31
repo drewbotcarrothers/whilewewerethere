@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>While We Were There</title>
+    <link>https://whilewewerethere.com/</link>
+    <atom:link href="https://whilewewerethere.com/rss.xml" rel="self" type="application/rss+xml" />
+    <description>The family journal of Andrew, Michelle, Harrison, Sullivan, and Maeve. Real trips and close-to-home days from Toronto, with the films on YouTube.</description>
+    <language>en-ca</language>
+  </channel>
+</rss>
