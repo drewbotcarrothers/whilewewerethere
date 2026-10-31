@@ -1,0 +1,71 @@
+---
+import { visited } from '../data/visited';
+import { fileUrl } from '../lib/paths';
+const places = visited.map((p) => ({ ...p, link: p.link ? fileUrl(p.link) : undefined }));
+---
+
+<section class="visited" aria-labelledby="visited-title">
+  <h2 id="visited-title" class="visited-title">Places we've been</h2>
+  <div class="visited-map" data-places={JSON.stringify(places)} role="region" aria-label="Interactive map of places we've been">
+    <p class="visited-loading">Loading map…</p>
+  </div>
+  <ul class="visited-list">
+    {places.map((p) => (
+      <li>
+        <span class:list={['visited-dot', p.kind === 'home' && 'is-home']} aria-hidden="true"></span>
+        {p.link ? <a href={p.link}>{p.name}</a> : <span>{p.name}</span>}
+        {p.year && <span class="visited-year"> · {p.year}</span>}
+      </li>
+    ))}
+  </ul>
+</section>
+
+<script>
+  const el = document.querySelector<HTMLElement>('.visited-map');
+  async function init() {
+    if (!el || el.dataset.ready) return;
+    el.dataset.ready = '1';
+    const [{ default: L }] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
+    const places = JSON.parse(el.dataset.places || '[]');
+    el.innerHTML = '';
+    const map = L.map(el, { scrollWheelZoom: false, worldCopyJump: true }).setView([30, -20], 2);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18, className: 'visited-tiles',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    for (const p of places) {
+      const home = p.kind === 'home';
+      const m = L.circleMarker([p.lat, p.lng], {
+        radius: home ? 8 : 9, color: '#312c28', weight: 2,
+        fillColor: home ? '#312c28' : '#c0a087', fillOpacity: 0.95,
+      }).addTo(map);
+      const name = esc(p.name) + (p.year ? ` <span>(${p.year})</span>` : '');
+      m.bindPopup(p.link ? `<a href="${esc(p.link)}">${name}</a>` : `<strong>${name}</strong>`);
+      m.bindTooltip(esc(p.name));
+    }
+  }
+  if (el) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((e) => { if (e.some((x) => x.isIntersecting)) { io.disconnect(); init(); } }, { rootMargin: '200px' });
+      io.observe(el);
+    } else init();
+  }
+</script>
+
+<style>
+  .visited { margin: 0; }
+  .visited-title { margin: 0 0 0.75rem; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+  .visited-map {
+    height: 22rem; border-radius: var(--radius); border: 1px solid var(--line);
+    background: var(--paper-deep); overflow: hidden; display: grid; place-items: center; z-index: 0; position: relative;
+  }
+  .visited-map :global(.visited-tiles) { filter: grayscale(0.6) sepia(0.25) brightness(1.04); }
+  .visited-loading { color: var(--ink-soft); }
+  .visited-list { list-style: none; padding: 0; margin: 0.8rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-size: 0.95rem; }
+  .visited-list li { display: flex; align-items: center; gap: 0.4rem; }
+  .visited-dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; background: var(--sun); border: 2px solid var(--pine); }
+  .visited-dot.is-home { background: var(--pine); }
+  .visited-year { color: var(--ink-soft); }
+  .visited-list a { color: var(--pine); }
+</style>

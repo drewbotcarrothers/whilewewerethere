@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import HeroArt from '../components/HeroArt.astro';
+import VisitedMap from '../components/VisitedMap.astro';
 import StoryCard from '../components/StoryCard.astro';
 import { family, site, tripTypes } from '../config';
 import { destinationsFrom, formatDate, getPosts, videosFrom } from '../lib/content';
@@ -34,7 +34,7 @@ const description = site.description;
           {family.map((person) => <li>{person.name}</li>)}
         </ul>
       </div>
-      <HeroArt />
+      <VisitedMap />
     </section>
 
     <section class="section" aria-labelledby="latest-stories">
