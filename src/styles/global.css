@@ -869,6 +869,27 @@ a:hover {
   background: var(--paper-deep);
 }
 
+/* Opt-in: in-body photos match the featured image width; text stays in the measure. */
+.post-hero-width-photos .prose {
+  max-width: none;
+}
+
+.post-hero-width-photos .prose > :not(figure) {
+  max-width: var(--measure);
+}
+
+.post-hero-width-photos .prose > figure {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+}
+
+.post-hero-width-photos .prose > figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;

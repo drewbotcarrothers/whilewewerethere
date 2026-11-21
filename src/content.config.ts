@@ -21,6 +21,8 @@ const blog = defineCollection({
         .optional(),
       draft: z.boolean().default(false),
       sample: z.boolean().default(false),
+      /** In-body photos match the featured image width; text stays in the measure. */
+      heroWidthPhotos: z.boolean().default(false),
     }),
 });
 
