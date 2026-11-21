@@ -24,6 +24,14 @@ export const visited: VisitedPlace[] = [
   // Confirm with Andrew, then add a year and a link once a story exists. Pinned at country centre.
   { name: 'Egypt', lat: 26.8206, lng: 30.8025 },
   { name: 'Portugal', lat: 39.3999, lng: -8.2245 },
-  // The only destinations in src/content/blog are draft samples ("Sample Lake", "Sample Park"),
-  // which are not real places, so they are not pinned.
+
+  { name: 'Paris, France', lat: 48.8566, lng: 2.3522, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Florence, Italy', lat: 43.7696, lng: 11.2558, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Sorrento, Italy', lat: 40.6263, lng: 14.3758, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Positano, Italy', lat: 40.6281, lng: 14.4849, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Pompeii, Italy', lat: 40.7498, lng: 14.4869, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Capri, Italy', lat: 40.5507, lng: 14.2426, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Rome, Italy', lat: 41.9028, lng: 12.4964, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  { name: 'Vatican City', lat: 41.9022, lng: 12.4539, year: 2013, link: '/blog/paris-florence-sorrento-rome-2013/' },
+  // Draft sample posts ("Sample Lake", "Sample Park") are not real places, so they are not pinned.
 ];

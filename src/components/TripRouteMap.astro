@@ -1,0 +1,192 @@
+---
+/**
+ * Interactive Leaflet route map for a single trip: numbered stops,
+ * a connecting line, popups, and a text list fallback.
+ * Tile style matches VisitedMap on the homepage (OSM, muted filter).
+ */
+export interface Props {
+  stops: { name: string; date: string; lat: number; lng: number }[];
+  heading?: string;
+}
+
+const { stops, heading = 'The route' } = Astro.props;
+const mapId = 'trip-route-map';
+---
+
+<section class="trip-route" aria-labelledby="trip-route-heading">
+  <h2 id="trip-route-heading">{heading}</h2>
+  <div
+    class="trip-route-map"
+    id={mapId}
+    data-stops={JSON.stringify(stops)}
+    role="region"
+    aria-label="Interactive map of the trip route"
+  >
+    <p class="trip-route-loading">Loading map…</p>
+  </div>
+  <ol class="trip-route-list">
+    {
+      stops.map((stop, i) => (
+        <li>
+          <span class="trip-route-num" aria-hidden="true">{i + 1}</span>
+          <span>
+            <strong>{stop.name}</strong>
+            <span class="trip-route-date"> — {stop.date}</span>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="trip-route-note">
+    Pins mark the landmarks in the photographs, in the order we reached them. The
+    camera on this trip did not store GPS; the places come from what is in the
+    frame, and the dates from the clocks on the files.
+  </p>
+</section>
+
+<script>
+  const el = document.querySelector<HTMLElement>('.trip-route-map');
+  async function init() {
+    if (!el || el.dataset.ready) return;
+    el.dataset.ready = '1';
+    const [{ default: L }] = await Promise.all([import('leaflet'), import('leaflet/dist/leaflet.css')]);
+    const stops: { name: string; date: string; lat: number; lng: number }[] = JSON.parse(
+      el.dataset.stops || '[]',
+    );
+    if (!stops.length) return;
+    el.innerHTML = '';
+    const map = L.map(el, { scrollWheelZoom: false, worldCopyJump: true });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      className: 'trip-route-tiles',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    const esc = (s: string) =>
+      s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+    const latlngs: [number, number][] = stops.map((s) => [s.lat, s.lng]);
+    const line = L.polyline(latlngs, {
+      color: '#8a5a3c',
+      weight: 3,
+      opacity: 0.85,
+      dashArray: '6 8',
+    }).addTo(map);
+
+    stops.forEach((s, i) => {
+      const n = i + 1;
+      const icon = L.divIcon({
+        className: 'trip-route-icon',
+        html: `<span class="trip-route-marker">${n}</span>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+        popupAnchor: [0, -14],
+      });
+      const marker = L.marker([s.lat, s.lng], { icon, title: `${n}. ${s.name}` }).addTo(map);
+      marker.bindPopup(`<strong>${n}. ${esc(s.name)}</strong><br>${esc(s.date)}`);
+    });
+
+    map.fitBounds(line.getBounds(), { padding: [28, 28], maxZoom: 7 });
+  }
+
+  if (el) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            io.disconnect();
+            init();
+          }
+        },
+        { rootMargin: '200px' },
+      );
+      io.observe(el);
+    } else {
+      init();
+    }
+  }
+</script>
+
+<style>
+  .trip-route {
+    margin: 1.6rem 0 2rem;
+  }
+  .trip-route h2 {
+    margin: 0 0 0.75rem;
+  }
+  .trip-route-map {
+    height: 26rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--paper-deep);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    z-index: 0;
+    position: relative;
+  }
+  .trip-route-map :global(.trip-route-tiles) {
+    filter: grayscale(0.6) sepia(0.25) brightness(1.04);
+  }
+  .trip-route-map :global(.trip-route-icon) {
+    background: none;
+    border: 0;
+  }
+  .trip-route-map :global(.trip-route-marker) {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--clay);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-body);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(28, 25, 21, 0.35);
+  }
+  .trip-route-loading {
+    color: var(--ink-soft);
+  }
+  .trip-route-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.9rem 0 0.5rem;
+    display: grid;
+    gap: 0.35rem 1.2rem;
+    font-size: 0.95rem;
+  }
+  @media (min-width: 640px) {
+    .trip-route-list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .trip-route-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .trip-route-num {
+    flex: 0 0 1.4rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background: var(--clay);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    margin-top: 0.15rem;
+  }
+  .trip-route-date {
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .trip-route-note {
+    margin: 0.6rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+</style>
