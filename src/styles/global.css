@@ -869,6 +869,63 @@ a:hover {
   background: var(--paper-deep);
 }
 
+/* Opt-in: photos edge-to-edge across the viewport; text stays in the measure. */
+.container.post-full-width-photos {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    min(var(--measure), calc(100% - 2rem))
+    minmax(0, 1fr);
+  column-gap: 0;
+  row-gap: 1.5rem;
+}
+
+.post-full-width-photos > * {
+  grid-column: 2;
+}
+
+.post-full-width-photos > .post-hero-img {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+  border-radius: 0;
+}
+
+.post-full-width-photos > .prose {
+  grid-column: 1 / -1;
+  max-width: none;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    min(var(--measure), calc(100% - 2rem))
+    minmax(0, 1fr);
+}
+
+.post-full-width-photos > .prose > * {
+  grid-column: 2;
+}
+
+.post-full-width-photos > .prose > figure {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+  margin: 2rem 0;
+}
+
+.post-full-width-photos > .prose > figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+.post-full-width-photos > .prose > figure figcaption {
+  width: min(var(--measure), calc(100% - 2rem));
+  margin-inline: auto;
+  margin-top: 0.6rem;
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;

@@ -21,6 +21,8 @@ const blog = defineCollection({
         .optional(),
       draft: z.boolean().default(false),
       sample: z.boolean().default(false),
+      /** Break photos out of the text column to the full viewport width. */
+      fullWidthPhotos: z.boolean().default(false),
     }),
 });
 
