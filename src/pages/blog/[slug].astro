@@ -63,7 +63,7 @@ const crumbs = breadcrumb([
   tags={data.tags}
   jsonLd={graph(posting, crumbs)}
 >
-  <article class:list={['container', 'post-layout', data.fullWidthPhotos && 'post-full-width-photos']}>
+  <article class="container post-layout">
     <nav class="crumbs" aria-label="Breadcrumb">
       <ol>
         <li><a href={url('/')}>Home</a></li>
@@ -96,8 +96,8 @@ const crumbs = breadcrumb([
       class="post-hero-img"
       src={data.heroImage}
       alt={data.heroAlt}
-      widths={data.fullWidthPhotos ? [640, 960, 1280, 1600] : [480, 800, 1200]}
-      sizes={data.fullWidthPhotos ? '100vw' : '(min-width: 760px) 760px, 100vw'}
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 760px) 760px, 100vw"
       loading="eager"
       fetchpriority="high"
     />
