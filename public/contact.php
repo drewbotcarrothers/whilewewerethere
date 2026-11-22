@@ -104,7 +104,7 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
 
 $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
 if (rate_limited($ip)) {
-    redirect_status('limit');
+    redirect_status('error');
 }
 
 $name = clean_line((string) ($_POST['name'] ?? ''), 200);
@@ -114,13 +114,13 @@ $message = trim((string) ($_POST['message'] ?? ''));
 $message = field_slice($message, 8000);
 
 if ($name === null || $email === null || $subject === null) {
-    redirect_status('invalid');
+    redirect_status('error');
 }
 if ($name === '' || $email === '' || $message === '') {
-    redirect_status('invalid');
+    redirect_status('error');
 }
 if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    redirect_status('invalid');
+    redirect_status('error');
 }
 
 $mailSubject = $subject !== '' ? $subject : 'Message from the website';
@@ -141,4 +141,4 @@ $headers = [
 ];
 
 $sent = mail(TO_EMAIL, $mailSubject, $body, implode("\r\n", $headers));
-redirect_status($sent ? 'sent' : 'mail');
+redirect_status($sent ? 'sent' : 'error');
