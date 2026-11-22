@@ -8,10 +8,7 @@ import { url, fileUrl } from '../lib/paths';
   <div class="header-inner">
     <a class="brand" href={url('/')}>
       <img class="brand-mark" src={fileUrl('/images/logo.png')} alt="" width="250" height="200" />
-      <span>
-        <span class="brand-name">{site.name}</span>
-        <span class="brand-place">{site.city}</span>
-      </span>
+      <span class="brand-name">{site.name}</span>
     </a>
     <nav class="nav nav-desktop" aria-label="Primary">
       <NavLinks />
