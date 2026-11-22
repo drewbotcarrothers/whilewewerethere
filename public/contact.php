@@ -104,7 +104,7 @@ if (trim((string) ($_POST['website'] ?? '')) !== '') {
 
 $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
 if (rate_limited($ip)) {
-    redirect_status('error');
+    redirect_status('limit');
 }
 
 $name = clean_line((string) ($_POST['name'] ?? ''), 200);
@@ -114,13 +114,13 @@ $message = trim((string) ($_POST['message'] ?? ''));
 $message = field_slice($message, 8000);
 
 if ($name === null || $email === null || $subject === null) {
-    redirect_status('error');
+    redirect_status('invalid');
 }
 if ($name === '' || $email === '' || $message === '') {
-    redirect_status('error');
+    redirect_status('invalid');
 }
 if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    redirect_status('error');
+    redirect_status('invalid');
 }
 
 $mailSubject = $subject !== '' ? $subject : 'Message from the website';
@@ -132,22 +132,13 @@ $body = "A message from the While We Were There contact form.\n\n"
     . 'Subject: ' . ($subject !== '' ? $subject : '(none)') . "\n\n"
     . $message . "\n";
 
-$encodedFrom = '=?UTF-8?B?' . base64_encode(FROM_NAME) . '?=';
-$encodedSubject = '=?UTF-8?B?' . base64_encode($mailSubject) . '?=';
 $headers = [
-    'From: ' . $encodedFrom . ' <' . FROM_EMAIL . '>',
+    'From: ' . FROM_NAME . ' <' . FROM_EMAIL . '>',
     'Reply-To: ' . $email,
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: 8bit',
 ];
 
-$sent = mail(
-    TO_EMAIL,
-    $encodedSubject,
-    $body,
-    implode("\r\n", $headers),
-    '-f' . FROM_EMAIL
-);
-
-redirect_status($sent ? 'sent' : 'error');
+$sent = mail(TO_EMAIL, $mailSubject, $body, implode("\r\n", $headers));
+redirect_status($sent ? 'sent' : 'mail');

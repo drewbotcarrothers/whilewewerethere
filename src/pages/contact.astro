@@ -59,5 +59,5 @@ const description = 'Send a message to Andrew and Michelle at While We Were Ther
   const sent = document.getElementById('contact-sent');
   const error = document.getElementById('contact-error');
   if (status === 'sent' && sent) sent.hidden = false;
-  if (status === 'error' && error) error.hidden = false;
+  if (status && status !== 'sent' && error) error.hidden = false;
 </script>
