@@ -868,12 +868,16 @@ a:hover {
   background: var(--paper-deep);
 }
 
-/* Opt-in: in-body photos match the featured image width; text stays in the measure. */
+/* Opt-in: body text and photos share the featured image width; the trip map stays on the measure. */
+.post-hero-width-photos .lede {
+  max-width: none;
+}
+
 .post-hero-width-photos .prose {
   max-width: none;
 }
 
-.post-hero-width-photos .prose > :not(figure) {
+.post-hero-width-photos .prose > .trip-route {
   max-width: var(--measure);
 }
 
