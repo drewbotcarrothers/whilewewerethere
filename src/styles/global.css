@@ -994,11 +994,22 @@ a:hover {
   padding-bottom: 3rem;
 }
 
-@media (min-width: 860px) {
-  .contact-grid {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    align-items: start;
-  }
+.banner-ok {
+  background: #e7f2ec;
+  border: 1px solid #b7d4c4;
+}
+
+.optional {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 form {

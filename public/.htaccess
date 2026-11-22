@@ -35,3 +35,9 @@ ErrorDocument 404 /404.html
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml application/rss+xml application/xml
 </IfModule>
+
+<Files "contact.php">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-store, no-cache, must-revalidate"
+  </IfModule>
+</Files>
