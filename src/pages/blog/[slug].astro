@@ -5,7 +5,7 @@ import AdSlot from '../../components/AdSlot.astro';
 import AffiliateDisclosure from '../../components/AffiliateDisclosure.astro';
 import YouTubeEmbed from '../../components/YouTubeEmbed.astro';
 import { site, tripTypes } from '../../config';
-import { findDestination, formatDate, getPosts, isoDate, slugify, type BlogPost } from '../../lib/content';
+import { findDestination, getPosts, slugify, type BlogPost } from '../../lib/content';
 import { breadcrumb, graph } from '../../lib/seo';
 import { url } from '../../lib/paths';
 import { render } from 'astro:content';
@@ -92,7 +92,6 @@ const structuredData = faqNode ? graph(posting, crumbs, faqNode) : graph(posting
       <p class="meta">
         <a class="chip" data-type={data.tripType} href={url(`/blog/type/${data.tripType}/`)}>{tripTypes[data.tripType].label}</a>
         {data.sample && <span class="chip">Sample draft</span>}
-        <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time>
       </p>
       <h1>{data.title}</h1>
       <p class="lede">{data.description}</p>

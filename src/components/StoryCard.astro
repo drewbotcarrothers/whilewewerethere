@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import { tripTypes } from '../config';
-import { formatDate, type BlogPost } from '../lib/content';
 import { url } from '../lib/paths';
 
 interface Props {
@@ -22,7 +21,6 @@ const data = post.data;
     <p class="meta">
       <span class="chip" data-type={data.tripType}>{tripTypes[data.tripType].label}</span>
       {data.sample && <span class="chip">Sample</span>}
-      <time datetime={data.date.toISOString()}>{formatDate(data.date)}</time>
     </p>
     <Heading>{data.title}</Heading>
     <p class="card-copy">{data.description}</p>

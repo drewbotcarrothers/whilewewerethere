@@ -16,7 +16,7 @@ interface Props {
 
 const {
   overviewHref = '/blog/paris-florence-sorrento-rome-2013/',
-  overviewTitle = 'A September from Paris to Rome (full trip overview & map)',
+  overviewTitle = 'From Paris to Rome (full trip overview & map)',
   prev,
   next,
 } = Astro.props;
@@ -24,7 +24,7 @@ const {
 
 <nav class="trip-series-nav" aria-label="Trip series navigation">
   <p class="trip-series-kicker">
-    Part of the 2013 trip series: <a href={url(overviewHref)}>{overviewTitle}</a>
+    Part of the Paris-to-Rome trip series: <a href={url(overviewHref)}>{overviewTitle}</a>
   </p>
   <div class="trip-series-links">
     {

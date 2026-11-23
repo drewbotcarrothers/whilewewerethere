@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 import VisitedMap from '../components/VisitedMap.astro';
 import StoryCard from '../components/StoryCard.astro';
 import { family, site, tripTypes } from '../config';
-import { destinationsFrom, formatDate, getPosts, videosFrom } from '../lib/content';
+import { destinationsFrom, getPosts, videosFrom } from '../lib/content';
 import { url } from '../lib/paths';
 
 const posts = await getPosts();
@@ -86,7 +86,6 @@ const description = site.description;
                     </div>
                     <p class="meta">
                       <span class="chip" data-type={post.data.tripType}>{tripTypes[post.data.tripType].label}</span>
-                      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
                     </p>
                     <h3>{post.data.title}</h3>
                     <p class="card-copy">Watch the film on this story.</p>
