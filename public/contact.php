@@ -34,11 +34,9 @@ function field_slice(string $value, int $max): string
     return function_exists('mb_substr') ? mb_substr($value, 0, $max, 'UTF-8') : substr($value, 0, $max);
 }
 
+/** Single-line MIME header. Avoid mb_encode_mimeheader(); it can fold onto a new line and break hsendmail. */
 function mime_header(string $text): string
 {
-    if (function_exists('mb_encode_mimeheader')) {
-        return mb_encode_mimeheader($text, 'UTF-8', 'B', "\r\n");
-    }
     return '=?UTF-8?B?' . base64_encode($text) . '?=';
 }
 
@@ -158,14 +156,6 @@ if (!$sent) {
     $sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers);
 }
 if (!$sent) {
-    $detail = json_encode([
-        'mail' => function_exists('mail'),
-        'disable' => ini_get('disable_functions'),
-        'sendmail' => ini_get('sendmail_path'),
-        'last' => error_get_last(),
-    ]);
-    error_log('contact.php: mail() failed: ' . $detail);
-    header('Location: ' . REDIRECT . '?' . http_build_query(['status' => 'error', 'diag' => $detail]), true, 303);
-    exit;
+    error_log('contact.php: mail() failed: ' . json_encode(error_get_last()));
 }
-redirect_status('sent');
+redirect_status($sent ? 'sent' : 'error');
