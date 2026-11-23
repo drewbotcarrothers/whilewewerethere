@@ -49,6 +49,23 @@ const crumbs = breadcrumb([
   { name: 'Stories', path: '/blog/' },
   { name: data.title, path: canonicalPath },
 ]);
+
+const faqNode = data.faqs?.length
+  ? {
+      '@type': 'FAQPage',
+      '@id': new URL(`${canonicalPath}#faq`, site.url).href,
+      mainEntity: data.faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.a,
+        },
+      })),
+    }
+  : null;
+
+const structuredData = faqNode ? graph(posting, crumbs, faqNode) : graph(posting, crumbs);
 ---
 
 <Base
@@ -61,7 +78,7 @@ const crumbs = breadcrumb([
   ogType="article"
   published={data.date.toISOString()}
   tags={data.tags}
-  jsonLd={graph(posting, crumbs)}
+  jsonLd={structuredData}
 >
   <article class:list={['container', 'post-layout', data.heroWidthPhotos && 'post-hero-width-photos']}>
     <nav class="crumbs" aria-label="Breadcrumb">
@@ -115,6 +132,21 @@ const crumbs = breadcrumb([
     <AdSlot placement="story-top" />
     <div class="prose">
       <Content />
+      {
+        data.faqs && data.faqs.length > 0 && (
+          <section class="post-faqs" aria-labelledby="post-faq-heading">
+            <h2 id="post-faq-heading">Frequently asked questions</h2>
+            <div class="faq-list">
+              {data.faqs.map((item) => (
+                <details class="faq" open>
+                  <summary>{item.q}</summary>
+                  <p>{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )
+      }
     </div>
     <p>
       More from the family on <a href={site.youtube} rel="noopener noreferrer">YouTube {site.youtubeHandle}</a>.

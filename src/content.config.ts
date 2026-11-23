@@ -23,6 +23,14 @@ const blog = defineCollection({
       sample: z.boolean().default(false),
       /** In-body photos match the featured image width; text stays in the measure. */
       heroWidthPhotos: z.boolean().default(false),
+      faqs: z
+        .array(
+          z.object({
+            q: z.string(),
+            a: z.string(),
+          }),
+        )
+        .optional(),
     }),
 });
 

@@ -893,6 +893,115 @@ a:hover {
   height: auto;
 }
 
+.post-hero-width-photos .faq-list {
+  max-width: none;
+}
+
+.post-faqs {
+  margin-top: 2rem;
+}
+
+.quick-facts {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.15rem 1.25rem;
+  margin: 0 0 1.75rem;
+}
+
+.quick-facts-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.quick-facts-grid {
+  display: grid;
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+}
+
+@media (min-width: 700px) {
+  .quick-facts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.quick-facts-row dt {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin: 0 0 0.15rem;
+}
+
+.quick-facts-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.trip-series-nav {
+  margin: 2rem 0 0.5rem;
+  padding: 1.15rem 1.25rem;
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.trip-series-kicker {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.trip-series-links {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 700px) {
+  .trip-series-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.trip-series-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.trip-series-card:hover {
+  border-color: var(--clay);
+}
+
+.trip-series-next {
+  text-align: right;
+}
+
+.trip-series-dir {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.trip-series-card strong {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 400;
+  color: var(--lake);
+}
+
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;

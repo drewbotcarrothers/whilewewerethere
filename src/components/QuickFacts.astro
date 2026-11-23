@@ -1,0 +1,27 @@
+---
+export interface FactItem {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  title?: string;
+  items: FactItem[];
+}
+
+const { title = 'Quick facts', items } = Astro.props;
+---
+
+<aside class="quick-facts" aria-label={title}>
+  <p class="quick-facts-title">{title}</p>
+  <dl class="quick-facts-grid">
+    {
+      items.map((item) => (
+        <div class="quick-facts-row">
+          <dt>{item.label}</dt>
+          <dd>{item.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</aside>
