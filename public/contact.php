@@ -158,6 +158,14 @@ if (!$sent) {
     $sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers);
 }
 if (!$sent) {
-    error_log('contact.php: mail() failed: ' . json_encode(error_get_last()));
+    $detail = json_encode([
+        'mail' => function_exists('mail'),
+        'disable' => ini_get('disable_functions'),
+        'sendmail' => ini_get('sendmail_path'),
+        'last' => error_get_last(),
+    ]);
+    error_log('contact.php: mail() failed: ' . $detail);
+    header('Location: ' . REDIRECT . '?' . http_build_query(['status' => 'error', 'diag' => $detail]), true, 303);
+    exit;
 }
-redirect_status($sent ? 'sent' : 'error');
+redirect_status('sent');
