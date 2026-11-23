@@ -2,11 +2,13 @@
 declare(strict_types=1);
 
 /**
- * Contact form handler for whilewewerethere.com.
+ * Contact form handler for whilewewerethere.com (Hostinger, PHP mail()).
  * Accepts POST from /contact/, sends mail to the site inbox, then redirects back.
+ * Hostinger only relays mail() From an existing mailbox on the domain.
  */
 
 const TO_EMAIL = 'contact@whilewewerethere.com';
+// Hostinger only relays mail() From an existing mailbox on the domain.
 const FROM_EMAIL = 'contact@whilewewerethere.com';
 const FROM_NAME = 'While We Were There';
 const REDIRECT = '/contact/';
@@ -30,6 +32,14 @@ function field_slice(string $value, int $max): string
         return $value;
     }
     return function_exists('mb_substr') ? mb_substr($value, 0, $max, 'UTF-8') : substr($value, 0, $max);
+}
+
+function mime_header(string $text): string
+{
+    if (function_exists('mb_encode_mimeheader')) {
+        return mb_encode_mimeheader($text, 'UTF-8', 'B', "\r\n");
+    }
+    return '=?UTF-8?B?' . base64_encode($text) . '?=';
 }
 
 /** Trim a single-line field and reject header-injection attempts. */
@@ -123,8 +133,9 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
     redirect_status('error');
 }
 
-$mailSubject = $subject !== '' ? $subject : 'Message from the website';
-$mailSubject = 'Website: ' . $mailSubject;
+$mailSubject = 'Website: ' . ($subject !== '' ? $subject : 'Message from the website');
+$encodedSubject = mime_header($mailSubject);
+$encodedVisitor = mime_header($name);
 
 $body = "A message from the While We Were There contact form.\n\n"
     . 'Name: ' . $name . "\n"
@@ -132,13 +143,21 @@ $body = "A message from the While We Were There contact form.\n\n"
     . 'Subject: ' . ($subject !== '' ? $subject : '(none)') . "\n\n"
     . $message . "\n";
 
-$headers = [
+$headers = implode("\r\n", [
     'From: ' . FROM_NAME . ' <' . FROM_EMAIL . '>',
-    'Reply-To: ' . $email,
+    'Reply-To: ' . $encodedVisitor . ' <' . $email . '>',
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: 8bit',
-];
+    'X-Mailer: whilewewerethere-contact',
+]);
 
-$sent = mail(TO_EMAIL, $mailSubject, $body, implode("\r\n", $headers));
+// Hostinger typically needs -f set to the domain mailbox; some hosts reject -f, so fall back.
+$sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers, '-f' . FROM_EMAIL);
+if (!$sent) {
+    $sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers);
+}
+if (!$sent) {
+    error_log('contact.php: mail() failed: ' . json_encode(error_get_last()));
+}
 redirect_status($sent ? 'sent' : 'error');
