@@ -150,12 +150,32 @@ $headers = implode("\r\n", [
     'X-Mailer: whilewewerethere-contact',
 ]);
 
+@ini_set('sendmail_from', FROM_EMAIL);
+
 // Hostinger typically needs -f set to the domain mailbox; some hosts reject -f, so fall back.
 $sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers, '-f' . FROM_EMAIL);
 if (!$sent) {
     $sent = @mail(TO_EMAIL, $encodedSubject, $body, $headers);
 }
 if (!$sent) {
-    error_log('contact.php: mail() failed: ' . json_encode(error_get_last()));
+    $last = error_get_last();
+    $stderr = '';
+    $cmd = (ini_get('sendmail_path') ?: '/usr/sbin/hsendmail -t') . ' -f' . FROM_EMAIL;
+    $proc = @proc_open($cmd, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    if (is_resource($proc)) {
+        fwrite($pipes[0], 'To: ' . TO_EMAIL . "\r\nSubject: {$encodedSubject}\r\n{$headers}\r\n\r\n{$body}");
+        fclose($pipes[0]);
+        $stdout = (string) stream_get_contents($pipes[1]);
+        $stderr = (string) stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $code = proc_close($proc);
+        $detail = json_encode(['last' => $last, 'code' => $code, 'stdout' => $stdout, 'stderr' => $stderr, 'cmd' => $cmd], JSON_UNESCAPED_SLASHES);
+    } else {
+        $detail = json_encode(['last' => $last, 'proc_open' => false], JSON_UNESCAPED_SLASHES);
+    }
+    error_log('contact.php: mail() failed: ' . $detail);
+    header('Location: ' . REDIRECT . '?' . http_build_query(['status' => 'error', 'diag' => $detail]), true, 303);
+    exit;
 }
-redirect_status($sent ? 'sent' : 'error');
+redirect_status('sent');
