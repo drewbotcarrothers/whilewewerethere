@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import DestinationCard from '../../components/DestinationCard.astro';
 import { destinationsFrom, getPosts } from '../../lib/content';
 import { url } from '../../lib/paths';
 
@@ -22,16 +23,7 @@ const description = 'Places from our published stories. Each destination collect
         <ul class="card-grid cols-3">
           {places.map((place) => (
             <li>
-              <article class="place-card">
-                <a href={url(`/destinations/${place.slug}/`)}>
-                  <span class="place-mark" aria-hidden="true">{place.name.slice(0, 1)}</span>
-                  <h2>{place.name}</h2>
-                  <p class="meta">{place.region}</p>
-                  <p class="card-copy">
-                    {place.posts.length} {place.posts.length === 1 ? 'story' : 'stories'}
-                  </p>
-                </a>
-              </article>
+              <DestinationCard place={place} allPosts={posts} eager />
             </li>
           ))}
         </ul>

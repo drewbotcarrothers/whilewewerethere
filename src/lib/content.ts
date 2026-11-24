@@ -171,3 +171,107 @@ export function assertTripType(value: string | undefined): TripType {
   if (value && isTripType(value)) return value;
   throw new Error(`Unknown trip type: ${value ?? ''}`);
 }
+
+const COUNTRY_TAGS: Record<string, string> = {
+  canada: 'Canada',
+  france: 'France',
+  italy: 'Italy',
+  spain: 'Spain',
+  portugal: 'Portugal',
+  greece: 'Greece',
+  japan: 'Japan',
+  uk: 'United Kingdom',
+  'united kingdom': 'United Kingdom',
+  usa: 'United States',
+  'united states': 'United States',
+};
+
+export function countriesFromTags(tags: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const tag of tags) {
+    const mapped = COUNTRY_TAGS[tag.trim().toLowerCase()];
+    if (mapped && !seen.has(mapped)) {
+      seen.add(mapped);
+      out.push(mapped);
+    }
+  }
+  return out;
+}
+
+export function placeLocationLabel(post: BlogPost): string {
+  const countries = countriesFromTags(post.data.tags);
+  return countries.length > 0 ? `${countries.join(' & ')} · ${post.data.region}` : post.data.region;
+}
+
+export function tripLengthFrom(post: BlogPost): string | undefined {
+  const body = post.body ?? '';
+  const quickFactMatch = body.match(
+    /label:\s*['"]Length of (?:stay|visit)['"]\s*,\s*value:\s*['"]([^'"]+)['"]/i,
+  );
+  if (quickFactMatch) {
+    let val = quickFactMatch[1]
+      .replace(/\s*\([^)]*\)/g, '')
+      .replace(/\s+on the ground$/i, '')
+      .replace(/\s+based in [^,]+(?:,.*)?$/i, '')
+      .replace(/\s+sightseeing(?:,.*)?$/i, '')
+      .replace(/\s+trip$/i, '')
+      .trim();
+    if (val) return val;
+  }
+
+  const desc = post.data.description;
+  const weeksWordMatch = desc.match(/\b(one|two|three|four)\s+weeks?\b/i);
+  if (weeksWordMatch) {
+    const map: Record<string, string> = { one: '1', two: '2', three: '3', four: '4' };
+    const n = map[weeksWordMatch[1].toLowerCase()] ?? weeksWordMatch[1];
+    return `${n} ${n === '1' ? 'week' : 'weeks'}`;
+  }
+  const numMatch = desc.match(/\b(\d+)\s+(days?|nights?|weeks?)\b/i);
+  if (numMatch) {
+    return `${numMatch[1]} ${numMatch[2].toLowerCase()}`;
+  }
+  return undefined;
+}
+
+export interface TripSeriesLink {
+  name: string;
+  href: string;
+  isOverview: boolean;
+}
+
+export function tripSeriesFor(post: BlogPost, allPosts: BlogPost[]): TripSeriesLink | undefined {
+  const body = post.body ?? '';
+  const blogRefs = [...body.matchAll(/\/blog\/([a-z0-9-]+)\//g)].map((m) => m[1]);
+  const hasSeriesNav = body.includes('<TripSeriesNav');
+
+  if (hasSeriesNav) {
+    for (const refId of blogRefs) {
+      if (refId === post.id) continue;
+      const target = allPosts.find((candidate) => candidate.id === refId);
+      if (target && !(target.body ?? '').includes('<TripSeriesNav')) {
+        return {
+          name: target.data.title.split(':')[0].trim(),
+          href: url(`/blog/${target.id}/`),
+          isOverview: false,
+        };
+      }
+    }
+  }
+
+  const childReferrers = allPosts.filter(
+    (other) =>
+      other.id !== post.id &&
+      (other.body ?? '').includes('<TripSeriesNav') &&
+      (other.body ?? '').includes(`/blog/${post.id}/`),
+  );
+  if (childReferrers.length > 0) {
+    return {
+      name: post.data.title.split(':')[0].trim(),
+      href: url(`/blog/${post.id}/`),
+      isOverview: true,
+    };
+  }
+
+  return undefined;
+}

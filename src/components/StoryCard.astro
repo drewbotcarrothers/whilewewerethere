@@ -1,29 +1,80 @@
 ---
 import { Image } from 'astro:assets';
 import { tripTypes } from '../config';
+import {
+  getPosts,
+  placeLocationLabel,
+  tripLengthFrom,
+  tripSeriesFor,
+  type BlogPost,
+} from '../lib/content';
 import { url } from '../lib/paths';
 
 interface Props {
   post: BlogPost;
+  allPosts?: BlogPost[];
   level?: 'h2' | 'h3';
+  eager?: boolean;
 }
 
-const { post, level = 'h2' } = Astro.props;
+const { post, allPosts, level = 'h2', eager = false } = Astro.props;
 const Heading = level;
 const data = post.data;
+const posts = allPosts ?? (await getPosts());
+const locationLabel = placeLocationLabel(post);
+const tripLength = tripLengthFrom(post);
+const series = tripSeriesFor(post, posts);
+const tags = data.tags.slice(0, 4);
 ---
 
 <article class="story-card" data-type={data.tripType}>
-  <a href={url(`/blog/${post.id}/`)}>
+  <div class="card-body">
     <div class="card-media">
-      <Image src={data.heroImage} alt="" width={640} height={400} loading="lazy" />
+      <Image
+        src={data.heroImage}
+        alt={data.heroAlt}
+        width={640}
+        height={400}
+        loading={eager ? 'eager' : 'lazy'}
+      />
     </div>
-    <p class="meta">
+    <p class="meta card-top-meta">
       <span class="chip" data-type={data.tripType}>{tripTypes[data.tripType].label}</span>
       {data.sample && <span class="chip">Sample</span>}
+      <span>{locationLabel}</span>
     </p>
-    <Heading>{data.title}</Heading>
+    <Heading class="card-title">
+      <a class="card-stretch-link" href={url(`/blog/${post.id}/`)}>
+        {data.title}
+      </a>
+    </Heading>
     <p class="card-copy">{data.description}</p>
-    <p class="meta">{data.destination} · {data.region}</p>
-  </a>
+    <dl class="card-facts">
+      <div>
+        <dt>Destination</dt>
+        <dd>{data.destination}</dd>
+      </div>
+      {tripLength && (
+        <div>
+          <dt>Trip length</dt>
+          <dd>{tripLength}</dd>
+        </div>
+      )}
+    </dl>
+    {tags.length > 0 && (
+      <ul class="card-tags" aria-label="Topics">
+        {tags.map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    )}
+    {series && !series.isOverview && (
+      <p class="card-series">
+        <span class="card-series-label">Trip series:</span>{' '}
+        <a class="card-inline-link" href={series.href}>
+          {series.name}
+        </a>
+      </p>
+    )}
+  </div>
 </article>

@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import { tripTypes } from '../config';
+import {
+  getPosts,
+  placeLocationLabel,
+  tripLengthFrom,
+  tripSeriesFor,
+  type BlogPost,
+  type PlaceGroup,
+} from '../lib/content';
+import { url } from '../lib/paths';
+
+interface Props {
+  place: PlaceGroup;
+  allPosts?: BlogPost[];
+  level?: 'h2' | 'h3';
+  eager?: boolean;
+}
+
+const { place, allPosts, level = 'h2', eager = false } = Astro.props;
+const Heading = level;
+const leadPost = place.posts[0];
+const data = leadPost.data;
+const posts = allPosts ?? (await getPosts());
+const locationLabel = placeLocationLabel(leadPost);
+const tripLength = tripLengthFrom(leadPost);
+const series = tripSeriesFor(leadPost, posts);
+const tags = data.tags.slice(0, 4);
+---
+
+<article class="place-card" data-type={data.tripType}>
+  <div class="card-body">
+    <div class="card-media">
+      <Image
+        src={data.heroImage}
+        alt={data.heroAlt}
+        width={640}
+        height={400}
+        loading={eager ? 'eager' : 'lazy'}
+      />
+    </div>
+    <p class="meta card-top-meta">
+      <span class="chip" data-type={data.tripType}>{tripTypes[data.tripType].label}</span>
+      <span>{locationLabel}</span>
+    </p>
+    <Heading class="card-title">
+      <a class="card-stretch-link" href={url(`/destinations/${place.slug}/`)}>
+        {place.name}
+      </a>
+    </Heading>
+    <p class="card-copy">{data.description}</p>
+    <dl class="card-facts">
+      {tripLength && (
+        <div>
+          <dt>Trip length</dt>
+          <dd>{tripLength}</dd>
+        </div>
+      )}
+      <div>
+        <dt>Stories</dt>
+        <dd>{place.posts.length} {place.posts.length === 1 ? 'story' : 'stories'}</dd>
+      </div>
+    </dl>
+    {tags.length > 0 && (
+      <ul class="card-tags" aria-label="Topics">
+        {tags.map((tag) => (
+          <li>{tag}</li>
+        ))}
+      </ul>
+    )}
+    {series && (
+      <p class="card-series">
+        <span class="card-series-label">{series.isOverview ? 'Series overview:' : 'Trip series:'}</span>{' '}
+        <a class="card-inline-link" href={series.href}>
+          {series.name}
+        </a>
+      </p>
+    )}
+  </div>
+</article>

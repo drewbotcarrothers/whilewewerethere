@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import VisitedMap from '../components/VisitedMap.astro';
+import DestinationCard from '../components/DestinationCard.astro';
 import StoryCard from '../components/StoryCard.astro';
 import { family, site, tripTypes } from '../config';
 import { destinationsFrom, getPosts, videosFrom } from '../lib/content';
@@ -47,7 +48,7 @@ const description = site.description;
           <ul class="card-grid cols-3">
             {latest.map((post) => (
               <li>
-                <StoryCard post={post} level="h3" />
+                <StoryCard post={post} allPosts={posts} level="h3" />
               </li>
             ))}
           </ul>
@@ -119,16 +120,7 @@ const description = site.description;
           <ul class="card-grid cols-3">
             {places.map((place) => (
               <li>
-                <article class="place-card">
-                  <a href={url(`/destinations/${place.slug}/`)}>
-                    <span class="place-mark" aria-hidden="true">{place.name.slice(0, 1)}</span>
-                    <h3>{place.name}</h3>
-                    <p class="meta">{place.region}</p>
-                    <p class="card-copy">
-                      {place.posts.length} {place.posts.length === 1 ? 'story' : 'stories'}
-                    </p>
-                  </a>
-                </article>
+                <DestinationCard place={place} allPosts={posts} level="h3" />
               </li>
             ))}
           </ul>
