@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { mailto, site } from '../config';
+import { mailto, publishWorkWithUs, site } from '../config';
 import { url } from '../lib/paths';
 
 const description = 'Partner with While We Were There on family travel stories and YouTube videos. Sponsorship enquiries go by email.';
@@ -8,9 +8,14 @@ const pitch = mailto(
   'Partnership enquiry — While We Were There',
   'Tell us about the brand, what you have in mind, and the timing.\n\n',
 );
+
+// Keep this file in the repo, but do not publish placeholder TODOs.
+if (!publishWorkWithUs) {
+  return new Response(null, { status: 404, statusText: 'Not Found' });
+}
 ---
 
-<Base title="Work with us" description={description}>
+<Base title="Work with us" description={description} noindex={true} robots="noindex, nofollow">
   <div class="container">
     <header class="page-hero">
       <p class="eyebrow">Sponsorships</p>

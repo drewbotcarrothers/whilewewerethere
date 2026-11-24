@@ -58,6 +58,19 @@ export const monetization = {
   affiliateDisclosure: false,
 } as const;
 
+/**
+ * Work with us stays unpublished until audience numbers are real.
+ * Flip this to true to build and list /work-with-us/ again.
+ */
+export const publishWorkWithUs = false;
+
+/**
+ * GA4 measurement ID for this site only. Leave empty until Andrew creates a
+ * While We Were There property. Override with PUBLIC_GA4_ID. Do not paste
+ * another brand's G- ID here.
+ */
+export const ga4Id = (import.meta.env.PUBLIC_GA4_ID ?? "").trim();
+
 export function isTripType(value: string): value is TripType {
   return (tripTypeIds as readonly string[]).includes(value);
 }

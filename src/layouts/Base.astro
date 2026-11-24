@@ -3,7 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
-import { site } from '../config';
+import { ga4Id, site } from '../config';
 import { graph } from '../lib/seo';
 import { fileUrl } from '../lib/paths';
 
@@ -15,6 +15,7 @@ interface Props {
   imageWidth?: number;
   imageHeight?: number;
   noindex?: boolean;
+  robots?: string;
   ogType?: 'website' | 'article';
   published?: string;
   tags?: string[];
@@ -29,6 +30,7 @@ const {
   imageWidth = 1200,
   imageHeight = 630,
   noindex = false,
+  robots,
   ogType = 'website',
   published,
   tags = [],
@@ -39,6 +41,9 @@ const fullTitle = title === site.name ? `${site.name} · ${site.tagline}` : `${t
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const imageUrl = new URL(image ?? '/og.png', Astro.site ?? site.url).href;
 const structured = jsonLd ?? graph();
+const loadGa4 = import.meta.env.PROD && /^G-[A-Z0-9]+$/.test(ga4Id);
+const robotsContent =
+  robots ?? (noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large');
 ---
 
 <!doctype html>
@@ -49,7 +54,7 @@ const structured = jsonLd ?? graph();
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    <meta name="robots" content={robotsContent} />
     <meta name="theme-color" content="#1b4332" />
     <meta name="author" content="Andrew" />
     <link rel="icon" href={fileUrl('/favicon-32.png')} type="image/png" sizes="32x32" />
@@ -74,6 +79,17 @@ const structured = jsonLd ?? graph();
     <meta name="twitter:image" content={imageUrl} />
     <meta name="twitter:image:alt" content={imageAlt} />
     <JsonLd data={structured} />
+    {loadGa4 && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}></script>
+        <script is:inline define:vars={{ ga4Id }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+        </script>
+      </>
+    )}
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>

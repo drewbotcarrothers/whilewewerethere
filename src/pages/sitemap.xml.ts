@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { tripTypeIds } from '../config';
+import { publishWorkWithUs, tripTypeIds } from '../config';
 import { destinationsFrom, getPosts, getProducts, regionsFrom, slugify, tagsFrom } from '../lib/content';
 
 export const GET: APIRoute = async ({ site }) => {
@@ -17,9 +17,10 @@ export const GET: APIRoute = async ({ site }) => {
     { loc: '/faq/' },
     { loc: '/privacy/' },
     { loc: '/shop/' },
-    { loc: '/work-with-us/' },
     { loc: '/destinations/' },
   ];
+
+  if (publishWorkWithUs) urls.push({ loc: '/work-with-us/' });
 
   if (posts.length) urls.push({ loc: '/blog/' });
 
