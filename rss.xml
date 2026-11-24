@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>While We Were There</title>
+    <link>https://whilewewerethere.com/</link>
+    <atom:link href="https://whilewewerethere.com/rss.xml" rel="self" type="application/rss+xml" />
+    <description>The family journal of Andrew, Michelle, Harrison, Sullivan, and Maeve. Real trips and close-to-home days from Toronto, with the films on YouTube.</description>
+    <language>en-ca</language>
+    <lastBuildDate>Wed, 25 Sep 2013 00:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Rome and Vatican City 3-Day Itinerary: Colosseum, Pantheon, Forum, and St. Peter's</title>
+      <link>https://whilewewerethere.com/blog/rome-and-vatican-city-3-day-itinerary/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/rome-and-vatican-city-3-day-itinerary/</guid>
+      <pubDate>Wed, 25 Sep 2013 00:00:00 GMT</pubDate>
+      <description>Our Rome and Vatican City 3-day itinerary from an early fall trip: Colosseum, Trevi Fountain, Pantheon, Castel Sant'Angelo, Roman Forum, St. Peter's Square, and current booking rules.</description>
+    </item>
+    <item>
+      <title>Pompeii Day Trip from Sorrento: Forum Streets, Vesuvius, and What to Expect</title>
+      <link>https://whilewewerethere.com/blog/pompeii-day-trip-from-sorrento/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/pompeii-day-trip-from-sorrento/</guid>
+      <pubDate>Sun, 22 Sep 2013 00:00:00 GMT</pubDate>
+      <description>Our Pompeii day trip from Sorrento in early fall: the Forum, paved streets under Vesuvius, the amphitheatre, vineyard, Small Theatre, plus current ticket rules and practical tips.</description>
+    </item>
+    <item>
+      <title>Sorrento and Amalfi Coast Itinerary: Positano and Capri in Four Days</title>
+      <link>https://whilewewerethere.com/blog/sorrento-amalfi-coast-positano-capri-itinerary/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/sorrento-amalfi-coast-positano-capri-itinerary/</guid>
+      <pubDate>Fri, 20 Sep 2013 00:00:00 GMT</pubDate>
+      <description>How we based in Sorrento for four nights on an early fall trip: Marina Grande, a day in Positano, a boat trip around Capri's Faraglioni, and practical planning notes.</description>
+    </item>
+    <item>
+      <title>Florence 2-Day Itinerary: The Duomo, Santa Croce, and Walking the Arno</title>
+      <link>https://whilewewerethere.com/blog/florence-2-day-itinerary/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/florence-2-day-itinerary/</guid>
+      <pubDate>Wed, 18 Sep 2013 00:00:00 GMT</pubDate>
+      <description>Our Florence 2-day itinerary from an early fall trip: walking up to the Duomo, San Lorenzo market, Santa Croce, Ponte Vecchio, and practical planning notes.</description>
+    </item>
+    <item>
+      <title>Paris 4-Day Itinerary: Rainy Walks, Versailles, and the Seine</title>
+      <link>https://whilewewerethere.com/blog/paris-4-day-itinerary/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/paris-4-day-itinerary/</guid>
+      <pubDate>Sat, 14 Sep 2013 00:00:00 GMT</pubDate>
+      <description>Our 4-day Paris itinerary from an early fall trip: Bastille in the rain, Versailles, the Eiffel Tower after dark, the Louvre, Notre-Dame, and practical planning notes.</description>
+    </item>
+    <item>
+      <title>From Paris to Rome: An Early Fall Trip Overview</title>
+      <link>https://whilewewerethere.com/blog/paris-florence-sorrento-rome-2013/</link>
+      <guid isPermaLink="true">https://whilewewerethere.com/blog/paris-florence-sorrento-rome-2013/</guid>
+      <pubDate>Sat, 14 Sep 2013 00:00:00 GMT</pubDate>
+      <description>Michelle and I spent two weeks walking from a rainy first afternoon in Paris to Florence, the Amalfi Coast, Capri, Pompeii, and Rome—a route we can still follow stop by stop through our photographs.</description>
+    </item>
+  </channel>
+</rss>
