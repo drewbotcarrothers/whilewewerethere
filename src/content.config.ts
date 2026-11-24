@@ -13,7 +13,7 @@ const blog = defineCollection({
       heroAlt: z.string(),
       destination: z.string(),
       region: z.string(),
-      tripType: z.enum(tripTypeIds),
+      tripType: z.enum(tripTypeIds).default('family-trip'),
       tags: z.array(z.string()).default([]),
       youtubeId: z
         .string()

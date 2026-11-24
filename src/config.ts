@@ -26,7 +26,7 @@ export const family = [
   { name: 'Maeve', role: 'Daughter', age: 6, initial: 'M' },
 ] as const;
 
-export const tripTypeIds = ['family-trip', 'day-trip', 'local'] as const;
+export const tripTypeIds = ['family-trip', 'couples-trip', 'day-trip', 'local'] as const;
 export type TripType = (typeof tripTypeIds)[number];
 
 export const tripTypes: Record<TripType, { label: string; plural: string; summary: string }> = {
@@ -34,6 +34,11 @@ export const tripTypes: Record<TripType, { label: string; plural: string; summar
     label: 'Family trip',
     plural: 'Family trips',
     summary: 'Overnights and longer stretches away from home.',
+  },
+  'couples-trip': {
+    label: "Couple's trip",
+    plural: "Couple's trips",
+    summary: 'Trips and longer stretches together for two.',
   },
   'day-trip': {
     label: 'Day trip',

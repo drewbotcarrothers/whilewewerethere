@@ -528,6 +528,11 @@ a:hover {
   border-top: 4px solid var(--pine);
 }
 
+.story-card[data-type="couples-trip"],
+.place-card[data-type="couples-trip"] {
+  border-top-color: var(--gold);
+}
+
 .story-card[data-type="day-trip"],
 .place-card[data-type="day-trip"] {
   border-top-color: var(--lake);
@@ -621,6 +626,11 @@ a:hover {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.chip[data-type="couples-trip"] {
+  background: #f4ece2;
+  color: #6e4e34;
 }
 
 .chip[data-type="day-trip"] {
