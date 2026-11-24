@@ -65,9 +65,16 @@ export const monetization = {
 export const publishWorkWithUs = false;
 
 /**
- * GA4 measurement ID for this site only. Leave empty until Andrew creates a
- * While We Were There property. Override with PUBLIC_GA4_ID. Do not paste
- * another brand's G- ID here.
+ * Google Tag Manager container for this site. GA4 is configured inside GTM,
+ * so leave ga4Id empty to avoid loading gtag.js twice.
+ * Override with PUBLIC_GTM_ID if needed.
+ */
+export const gtmId = (import.meta.env.PUBLIC_GTM_ID ?? "GTM-KQJBWT85").trim();
+
+/**
+ * Direct GA4 measurement ID. Leave empty while GA4 is fired from GTM.
+ * Override with PUBLIC_GA4_ID only if you later load gtag.js here instead of GTM.
+ * Do not paste another brand's G- ID here.
  */
 export const ga4Id = (import.meta.env.PUBLIC_GA4_ID ?? "").trim();
 
